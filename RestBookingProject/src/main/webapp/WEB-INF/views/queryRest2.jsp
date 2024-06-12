@@ -88,26 +88,27 @@
 				  <!-- 第一層的checkbox list -->
 				  <div id="countryList">
 						<div v-for="(value, key) in country" class="form-check">
-							<input class="form-check-input" type="checkbox" :value="value" v-model="checkedCountry" @change="handleCheckedCountry" name="country">
+							<input class="form-check-input" type="checkbox" :value="value" @change="handleCheckedCountry" name="country">
 							<label class="form-check-label">{{ value }}</label>
 						</div>
 					</div>
 				
 				  <!-- 第二層的checkbox list -->
 				  <div id="districtList" v-if="Object.keys(districts).length > 0">
-						<div v-for="(value, key) in districts" class="form-check">
+						<div v-for="(value, key) in districts" class="form-check"><!--:value指的是input 元素的 value 属性，而"value"指的是当前迭代中的 value-->
 							<input class="form-check-input" type="checkbox" :value="value" 
 								v-model="checkedDistrict[key]" @change="handleCheckedDistrict(key)" name="district" id="district">
-								<!--當被選中時，v-model 會將相應的數據屬性（這裡是 checkedDistrict[key]）設置為該複選框的值。
-									如果該複選框的 value 是 true，那麼在被選中時，checkedDistrict[key] 的值就會被設置為 true。-->
-								<!--只要這個value不等於0，就相當於是true-->
+								<!--v-model在checkbox被勾選時被設定為true，接著透過雙向綁定，將值傳給checkedDistrict[key]-->
 							<label class="form-check-label">{{ value }}</label>
 						</div>			
 				  </div>
 
-				  <div id="districtButtonList" v-if="Object.keys(allDistricts).length > 0">
+				  <div id="districtButtonList" v-if="Object.entries(allDistricts).length > 0"><!--這是一個以一個個key-value對構成的二維陣列，並非map-->
 						<!--預設可以呈顯全部縣市行政區的button，只是會根據v-if判斷是否要呈顯-->
-						<button v-for="(value, key) in allDistricts" v-if="showButton[key]" @click="handleButtonClick(key)" class="btn btn-primary">{{ value }}</button>
+						<button v-for="(value, key) in allDistricts" v-if="showButton[key]" class="btn btn-primary">{{ value }}</button>
+						<div v-for="(value, key) in allDistricts" class="form-check">
+							<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
+						</div>
 					</div>
 					
 					<div class="text-center">
@@ -133,19 +134,21 @@
 				checkedCountry: [],
 				districts: {},//這是原生js物件//在 Vue.js 中，物件的屬性可以通過方括號 [] 來訪問
 				allDistricts:{},//表示全部縣市的行政區
-        		checkedDistrict: {},//表示被選取縣市的行政區
-				showButton:{}//這物件與「全部縣市的行政區」綁定
+        		checkedDistrict: [],//表示被選取縣市的行政區
+				showButton:[]//這物件與「全部縣市的行政區」綁定
 			},
 			//20240306新增
 			//onready事件發生後，就執行的區塊
 			//mounted階段相當於發生onready事件後的階段
 			mounted() {
 				this.loadAllDistricts();
+				//20240417新增
+				checkedDistrict=new Array(999).fill(false);
+				showButton=new Array(999).fill(false);
 			},
 			methods: {
 				handleCheckedCountry(event) {
 					this.loadDistricts(event);
-					//this.updateButton(); 
 				},
 				loadDistricts(event){
 					//因vue.js不能用this來表示觸發事件的元素，故以event.target.value取代jQUery的$(this).val()
@@ -159,7 +162,6 @@
 						success: (data) => {
 							// 將獲取的包含key value的原生js物件，assign給districts這個原生js物件
 							this.districts = data;
-							//alert(this.districts.length);
 						},
 						error: (error) => {
 							console.error('Error fetching second layer options:', error);
@@ -171,9 +173,11 @@
 						url: '/RestBookingProject/form/queryAllDistricts',
 						method: 'GET',
 						success: (data) => {
-							//this.allDistricts = data;
-							Object.keys(data).forEach(key => {
-								this.$set(this.allDistricts, key, data[key]);
+							//this.allDistricts = data;//這作法不好
+							//20240417更新
+							dataMap = new Map(Object.entries(data));
+							dataMap.forEach((value,key) => {//不可寫成(key,value)
+								this.$set(this.allDistricts, key, value);
 							});
 						},
 						error: (error) => {
@@ -182,8 +186,9 @@
             		});
 				},
 				handleCheckedDistrict(key){
-					this.showButton[key] = this.checkedDistrict[key];//因v-model雙向綁定，使得當checkbox被選取時，該vue變數變為true
-					//assgin給另一vue變數；再利用v-if的雙向綁定功能，間接設定html button的樣式
+					//this.showButton[key] = !this.showButton[key];
+					this.showButton[key] = this.checkedDistrict[key];
+					//倒轉vue變數；再利用v-if的雙向綁定功能，間接設定html button的樣式
 				}		
 			}
 			// other options here

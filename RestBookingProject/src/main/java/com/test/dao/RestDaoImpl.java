@@ -118,7 +118,7 @@ public class RestDaoImpl implements RestDao{
 				    // 讀取BLOB型別圖片，轉成byte array
 				    byteArray = blob.getBytes(1, (int) blob.length());
 				}else {
-					Path defaultImg = Paths.get("C:\\Users\\cuser\\workspace20231213\\photo1.png");
+					Path defaultImg = Paths.get("C:\\Users\\cuser\\workspace-spring-tool-suite-4-4.21.0.RELEASE1\\photo1.png");
 					try {
 						
 						byteArray = Files.readAllBytes(defaultImg);

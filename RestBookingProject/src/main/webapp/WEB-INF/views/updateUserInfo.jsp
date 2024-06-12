@@ -46,8 +46,11 @@
 
                 <div class="col-md-3">
                   <label for="inputCity" class="form-label">City</label>
-                  <select id="inputCity" class="form-select" v-if="Object.keys(allCity).length > 0" v-model="selectedCityOption">
-                      <option v-for="(value, key) in allCity" :value="value">{{value}}</option>
+                  <select id="inputCity" class="form-select" v-if="Object.keys(allCity).length > 0" v-model="selectedCityOption"><!--v-model用於实现双向绑定；v-model的值就是該html元素之值-->
+                      <option v-for="(value, key) in allCity" v-bind:value="value">{{value}}</option>
+                      <!--Vue.js 会将第一个参数视为当前项的值，第二个参数视为当前项的键，而没有提供第三个参数时，默认情况下并不会将它视为索引-->
+                      <!--"value"跟{{value}}，都是來自(value, key)的value-->
+                      <!--v-bind:value的value，等於option 元素的 value 属性-->
                   </select>
                 </div>
                 <div class="col-md-3">
@@ -83,27 +86,35 @@
     <script>
       new Vue({
         el: '#app',
-        data: {
-          allCity:{},//表示全部縣市
-          districts:{},//表示某縣市所有行政區
-
-          selectedCityOption:'',
-          selectedDistrictOption:''
+        data() {
+  			return {
+    			allCity:{},
+    			districts:{},
+    			selectedCityOption:'',
+    			selectedDistrictOption:''
+  			}
         },
         methods: {
             loadAllCity(){
               $.ajax({
                 url:"/RestBookingProject/form/queryAllCity",
                 method:"get",
-                success:(data) => {//data 是一個純粹的JavaScript物件，沒有明確的型別，型別可以在運行時自由變化
-                    this.allCity=data;//這個allCity，資料面是map，但型別卻是未定
-                    var allCityForFindSelectedOption = new Map(Object.entries(data));//這個allCity，資料面、型別都是map
+                success:(data) => {//data 是一個純粹的JavaScript物件，object型別的可迭代對象
+                    this.allCity=data;//這個allCity，資料面是map，但型別卻是object，但对象类型并不是一个可迭代对象
+                    
+                    var allCityForFindSelectedOption = new Map(Object.entries(data));//Object.entries()回傳的是array，將其作為參數添加到new Map()裡，即可產生可迭代之物件
+                    //補充：Object.keys()也是回傳的是array
 
-                    var defaultOption = Array.from(allCityForFindSelectedOption.entries()).find(([value, label]) => label === 
-                    "<c:out value='${userCity}'/>");
-    
+					//如果你传递一个对象类型的可迭代对象，它不会直接被接受，因为对象类型并不是一个可迭代对象
+                    var defaultOption = Array.from(allCityForFindSelectedOption).find(function([value, label]){
+                    	return label === "<c:out value='${userCity}'/>";
+                    });
+                    //find函數可對可迭代對象進行遍歷，其參數是回調函數，而回調函數的參數是可迭代對象的元素
+    				//当find函数找到符合条件的元素时，它会立即停止迭代，并返回该符合条件的元素
+    				//補充：foreach()其參數也是回調函數
+
                     if (defaultOption) {
-                      this.selectedCityOption = defaultOption[0];
+                      this.selectedCityOption = defaultOption[1];
                     }
                 },
                 error:(error) => {
