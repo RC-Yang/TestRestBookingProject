@@ -64,6 +64,6 @@ public class RestController {
 	
 		model.addAttribute("rests", allQueryRest);
 		
-		return "queryRestResult";
+		return "queryRestResult1";
 	}
 }

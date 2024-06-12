@@ -108,6 +108,7 @@
 						<button v-for="(value, key) in allDistricts" v-if="showButton[key]" class="btn btn-primary">{{ value }}</button>
 						<div v-for="(value, key) in allDistricts" class="form-check">
 							<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
+							<!--:disabled是Vue.js專有的屬性；只有当 showButton[key] 为 false（即按钮不显示）时，:disabled 属性才会被设置为 true-->
 						</div>
 					</div>
 					

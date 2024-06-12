@@ -65,10 +65,10 @@
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="#" target="_blank">
-                    
+                    <img src="data:image/jpeg;base64,${rest.imageList.get(0).restImage}" alt="Image" class="img-thumbnail w-100 h-75">
                     <div class="caption">
-                    	<p>${rest[0]}</p>
-                        <p>${rest[1]}</p>
+                    	<p>${rest.name}</p>
+                        <p>${rest.address}</p>
                     </div>
                     </a>
                     
@@ -86,10 +86,21 @@
                                 
                                 </div>
                                 <div class="modal-body">
-                                Modal 內容在這裡...
+                                	<p>營業時間：</p>
+									<p>${rest.openingTime}~${rest.closingTime}</p>
                                 </div>
                                 <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+									<form method="post" action="<%=request.getContextPath() %>/booking/goToBooking">
+										<input type="hidden" name="restId" id="restId" value="${rest.id}">
+										<input type="hidden" name="restName" id="restName" value="${rest.name}">
+										<input type="hidden" name="restAddress" id="restAddress" value="${rest.address}">
+										<input type="hidden" name="restOT" id="restOT" value="${rest.openingTime}">
+										<input type="hidden" name="restCT" id="restCT" value="${rest.closingTime}">
+										<input type="hidden" name="curDate" id="curDate" class="curDate" value="">
+										
+										<button type="submit" class="btn btn-primary btn-lg">訂位</button>
+									</form>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                                 </div>
                             </div>
                             </div>
@@ -119,7 +130,7 @@
             var currentPage=1;
             var triggerPage=1;//選擇的頁碼
             var queryResultCount = $('.col-md-4').length;
-            var queryResultPerPage =5;
+            var queryResultPerPage =20;
             var maxPage=0;//最大可以選擇的頁碼
 
             if(queryResultCount/queryResultPerPage!=0){
@@ -128,10 +139,17 @@
             else if(queryResultCount/queryResultPerPage==0){
                 maxPage=queryResultCount/queryResultPerPage;//20/5==4，需要4頁
             }
+            
+            //20240612新增動態產生分頁頁碼列表
+            $(".pagination").find("li:not(:first,:last)").remove();
+            for (var i = 1; i <= maxPage; i++) {
+                $("<li class='page-item'><a class='page-link' href='#'>" + i + "</a></li>")
+                    .insertBefore(".pagination li:last");
+            }           
+            $('.col-md-4').hide().slice(0,queryResultPerPage).show();//所有class名為col-md-4的元素通通隱藏，除了第0~4個元素
 
-            $('.col-md-4').hide().slice(0,queryResultPerPage).show();
-
-            $('.pagination').on('click','.page-link',function(){
+			//20240612新增動態找出現為哪一頁
+            $('.pagination').on('click','.page-link',function(){//第二個參數是指某個指定父元素底下，所有匹配選擇器的子元素
                 triggerPage = $(this).text();
 
                 if(triggerPage=='Previous' && currentPage>1){
