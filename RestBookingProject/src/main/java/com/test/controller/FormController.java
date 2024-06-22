@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.test.bean.District;
+import com.test.bean.RestStyle;
 import com.test.bean.User;
+import com.test.dao.FormRepository;
+import com.test.dao.RestStyleRepository;
 import com.test.dao.UserRepositoryBySpringJPA;
 import com.test.service.FormService;
 import com.test.util.DaoUtil;
@@ -38,6 +41,8 @@ public class FormController {
 	private FormService formService;
 	@Autowired
 	private UserRepositoryBySpringJPA userRepositoryBySpringJPA;
+	@Autowired
+	private RestStyleRepository restStyleRepository;
 	
 	@RequestMapping("/queryAllCity")
 	@ResponseBody
@@ -84,18 +89,13 @@ public class FormController {
 		return districtJsonStr;
 	}
 	
-	@RequestMapping(value="/queryInitialDistrict")
-	public String queryInitialDistrict(Model model) {
+	@RequestMapping(value="/queryRestStyle")
+	public String queryRestStyle(Model model) {
 		
-		List<District> districtList = formService.findDistrictsByCountry("臺北市");
+		List<RestStyle> restStyleList = restStyleRepository.findAllRestStyle();
+		model.addAttribute("restStyleList", restStyleList);
 		
-		Map<String,String> districtMap = new HashMap<>();
-		for(District district:districtList) {
-			districtMap.put(district.getDistrictId().toString(),district.getDistrictName());
-		}
-		model.addAttribute("districtMap", districtMap);
-		
-		return "queryRest2";
+		return "queryRest3";
 	}
 	
 	@RequestMapping("/goToUpdateUserInfo")

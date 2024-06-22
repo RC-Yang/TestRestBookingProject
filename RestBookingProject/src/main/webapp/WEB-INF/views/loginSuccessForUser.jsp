@@ -153,7 +153,7 @@
                 <a href="booking.html">訂位</a>
                 <a href="#">查詢訂位</a>
                 <a href="#">修改/取消訂位</a>
-                <a href="<%=request.getContextPath() %>/form/queryInitialDistrict">查詢餐廳</a>
+                <a href="<%=request.getContextPath() %>/form/queryRestStyle">查詢餐廳</a>
                 <a href="#">推薦餐廳</a>
                 <a href="#">關於我們</a>
             </nav>
