@@ -136,22 +136,21 @@
 						</div>
 					</div>
 				</div>
-  			</form>
-			
-			
-			<div id="districtButtonList" v-if="Object.entries(allDistricts).length > 0"><!--這是一個以一個個key-value對構成的二維陣列，並非map-->
-				<!--預設可以呈顯全部縣市行政區的button，只是會根據v-if判斷是否要呈顯-->
-				<button v-for="(value, key) in allDistricts" v-if="showButton[key]" class="btn btn-primary">{{ value }}</button>
-				<div v-for="(value, key) in allDistricts" class="form-check">
-					<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
-					<!--:disabled是Vue.js專有的屬性；只有当 showButton[key] 为 false（即按钮不显示）时，:disabled 属性才会被设置为 true-->
+
+				<div id="districtButtonList" v-if="Object.entries(allDistricts).length > 0"><!--這是一個以一個個key-value對構成的二維陣列，並非map-->
+					<!--預設可以呈顯全部縣市行政區的button，只是會根據v-if判斷是否要呈顯-->
+					<button v-for="(value, key) in allDistricts" v-if="showButton[key]" class="btn btn-primary">{{ value }}</button>
+					<div v-for="(value, key) in allDistricts" class="form-check">
+						<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
+						<!--:disabled是Vue.js專有的屬性；只有当 showButton[key] 为 false（即按钮不显示）时，:disabled 属性才会被设置为 true-->
+					</div>
 				</div>
-			</div>
-			
-			<div class="text-center">
-				<button type="submit" class="btn btn-primary">查詢餐廳</button>
-				<button type="button" class="btn btn-danger" onclick="javascript:history.back();">取消</button>
-			</div>
+				
+				<div class="text-center">
+					<button type="submit" class="btn btn-primary">查詢餐廳</button>
+					<button type="button" class="btn btn-danger" onclick="javascript:window.location.href = '/RestBookingProject/entry/login';">取消</button>
+				</div>
+  			</form>			
 		</div>
     </div>
 	<script>
