@@ -65,7 +65,7 @@ public class RestRepositoryByJPA{
     }
     @Transactional
     public void addBookingData(Integer restId, Date bookingDate
-			, Time bookingTime,Integer seat) {
+			, Time bookingTime,Integer seat,Integer guestId) {
     	//bookingId已透過SQL，設置為AUTO_INCREMENT，不須在此額外做設定
     	BookingRecord bookingRecord = new BookingRecord();
     	bookingRecord.setBookingDate(bookingDate);
@@ -74,7 +74,9 @@ public class RestRepositoryByJPA{
     	Restaurant rest = queryRestByRestId(restId);
     	bookingRecord.setBookingRest(rest);
     	bookingRecord.setGuestNum(seat);
-
+    	
+    	bookingRecord.setGuestId(guestId);
+    	
     	entityManager.persist(bookingRecord);
     	return;
     }
