@@ -16,7 +16,7 @@
 </head>
 <body>
     <input type="hidden" id="bookingRecord" value='${bookingRecord}' /><!--取出後端model物件內的json格式字串，注意要用單引號，因雙引號已被json格式字串用掉-->
-    <div class="modal fade" tabindex="-1" id="bookingRecordModal">
+    <div class="modal fade" tabindex="-1" id="bookingRecordModal" data-backdrop="static">
         <div class="modal-dialog modal-lg"><!--添加modal-lg以適應螢幕寬度-->
           <div class="modal-content">
             <div class="modal-header">

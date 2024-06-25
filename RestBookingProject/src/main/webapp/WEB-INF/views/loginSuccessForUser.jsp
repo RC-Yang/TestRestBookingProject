@@ -115,8 +115,11 @@
     <script>
     $(document).ready(function(){
     	$('#logInSuccessModal').modal('hide');
-    	if(${loginResult}==true){
-    		showLoginSuccessModal('${loginSuccessMessage}');
+      //20240625修改;直接從localStorage讀取來自上一個jsp頁面的值
+    	if(localStorage.getItem("loginSuccess")=='true'){
+    		showLoginSuccessModal(localStorage.getItem("loginSuccessMessage"));
+        localStorage.removeItem("loginSuccess");
+        localStorage.removeItem("loginSuccessMessage");
     	}
     });
     </script>

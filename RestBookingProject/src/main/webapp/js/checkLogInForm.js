@@ -22,7 +22,10 @@ function checkLogInFormWithAjax(){
 			//這個字串會被添加至http request body內
 			success: function(response) {
 				if(response=="登入成功"){
-					window.location.href = 'http://localhost:8080/RestBookingProject/entry/login?loginSuccess=true&loginSuccessMessage='+response+'';	
+					//20240625修改；需呈顯於下一個jsp頁面但不須傳送到後端的值，存於localStorage
+					window.location.href = 'http://localhost:8080/RestBookingProject/entry/login';
+					localStorage.setItem("loginSuccessMessage",response);
+					localStorage.setItem("loginSuccess",true);
 				}
 				else{
 					$('#logInFailModal').addClass('fade');

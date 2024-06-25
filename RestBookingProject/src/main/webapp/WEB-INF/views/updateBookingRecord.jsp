@@ -17,6 +17,11 @@
             bookingTime = localStorage.getItem('bookingTime');
             guestNum = localStorage.getItem('guestNum');
 
+            localStorage.removeItem('restName');
+            localStorage.removeItem('bookingDate');
+            localStorage.removeItem('bookingTime');
+            localStorage.removeItem('guestNum');
+
             $("#restName").val(restName);
             $("#bookingDate").val(bookingDate);//值為YYYY-MM-DD的格式，正是input type="date"所需
             $("#bookingTime").val(bookingTime);

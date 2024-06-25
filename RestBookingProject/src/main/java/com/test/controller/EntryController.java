@@ -63,10 +63,6 @@ public class EntryController {
 		String userType = req.getParameter("userType")==null?session.getAttribute("userType").toString():req.getParameter("userType");
 		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
 		String password = req.getParameter("password")==null?(String)session.getAttribute("password"):req.getParameter("password");
-		String loginResult = req.getParameter("loginSuccess");
-		
-		req.setAttribute("loginResult", loginResult);
-		req.setAttribute("loginSuccessMessage", req.getParameter("loginSuccessMessage"));
 		
 		Optional<User> userOptional = userDao.queryUserByAccount(account, Integer.parseInt(userType),password);
 		

@@ -63,7 +63,7 @@
     </style>
 </head>
 <body>
-    <div class="modal fade" tabindex="-1" id="bookingRecordModal" data-bs-backdrop="static">
+    <div class="modal fade" tabindex="-1" id="bookingRecordModal" data-bs-backdrop="static"><!--點擊 Modal 外的背景不會關閉 Modal，且背景也不可被點擊-->
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
