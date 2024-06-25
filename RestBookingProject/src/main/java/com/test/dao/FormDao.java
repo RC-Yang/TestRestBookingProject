@@ -6,4 +6,5 @@ import com.test.bean.District;
 
 public interface FormDao {
 	public HashMap<String,District> queryDistrictWithCountry(int countryId);
+	public int deleteBookingRecord(int bookingId);
 }

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -130,6 +131,16 @@ public class BookingController {
 
 		model.addAttribute("bookingRecord", sb2.toString());
 		return "bookingRecord";
+	}
+	
+	@GetMapping("/goToUpdateBookingRecord")
+	public String goToUpdateBookingRecord(Model model,HttpServletRequest req) {
+		javax.servlet.http.HttpSession session = req.getSession();
+		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
+		List<BookingRecord> bookingRecord = bookingRepository.findBookingRecordsByGuestId(Integer.parseInt(account));
+
+		model.addAttribute("bookingRecord", bookingRecord);
+		return "bookingRecord2";
 	}
 	
 	@PostMapping("/makeReservation")

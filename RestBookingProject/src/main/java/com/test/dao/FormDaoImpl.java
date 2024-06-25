@@ -12,4 +12,8 @@ public class FormDaoImpl implements FormDao{
 		return null;
 	}
 
+	@Override
+	public int deleteBookingRecord(int bookingId) {
+		return 0;
+	}
 }
