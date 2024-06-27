@@ -25,6 +25,7 @@ import com.test.bean.User;
 import com.test.dao.RestDao;
 import com.test.dao.UserDao;
 import com.test.util.ControllerUtil;
+import com.test.util.EmailService;
 
 @Controller
 @RequestMapping("/entry")
@@ -34,6 +35,8 @@ public class EntryController {
 	RestDao restDao;
 	@Autowired
 	UserDao userDao;
+	@Autowired
+	EmailService emailService;
 	
 	@RequestMapping(value="/checkLogin")
 	@ResponseBody
@@ -177,7 +180,9 @@ public class EntryController {
 		String email = req.getParameter("email");
 		model.addAttribute("action", 3);
 		model.addAttribute("user", new User());
-		ControllerUtil.sendMail(email);
+		//ControllerUtil.sendMail(email);
+		//20240627修改
+		emailService.sendMail(email);
 		return "reqAndLogin5";
 	}
 	@RequestMapping("/goToResetPassword")
