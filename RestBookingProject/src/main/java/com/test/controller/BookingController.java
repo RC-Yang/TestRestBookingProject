@@ -60,76 +60,26 @@ public class BookingController {
 		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
 		List<BookingRecord> bookingRecord = bookingRepository.findBookingRecordsByGuestId(Integer.parseInt(account));
 
-		//20240623新增
-		StringBuilder sb = new StringBuilder();
-		for (BookingRecord record : bookingRecord) {
-			sb.append("rest: ").append(record.getBookingRest().getName()).append(", ")
-		      .append("date: ").append(record.getBookingDate()).append(", ")
-		      .append("time: ").append(record.getBookingTime()).append(", ")
-		      .append("number: ").append(record.getGuestNum()).append("; ");
-		}
-		if (sb.length() > 0) {
-		    sb.delete(sb.length() - 2, sb.length());
-		}
-		String bookingRecordStr = sb.toString();
-		
-		// 切割字串以分號為分隔符
-        String[] bookingRecordStrArr = bookingRecordStr.split(";");
+		//20240623新增		
+        StringBuilder sb = new StringBuilder();
+        int i =0;
+        sb.append("[");
+        for (BookingRecord record : bookingRecord) {
+            sb.append("{");
+            sb.append("\"rest\": \"").append(record.getBookingRest().getName()).append("\", ");
+            sb.append("\"date\": \"").append(record.getBookingDate()).append("\", ");
+            sb.append("\"time\": \"").append(record.getBookingTime()).append("\", ");
+            sb.append("\"number\": ").append(record.getGuestNum());
+            sb.append("}");
 
-        // 使用 Gson 將每個訂位信息轉換成 JSON
-        Gson gson = new Gson();
-        List<BookingRecordDTO> bookingRecordDTOList = new ArrayList<>();
-
-        for (String str : bookingRecordStrArr) {
-        	BookingRecordDTO bookingRecordDTO = new BookingRecordDTO();
-            
-            // 解析每個訂位信息
-            String[] parts = str.trim().split(", ");
-            for (String part : parts) {
-                String[] keyValue = part.split(": ");
-                String key = keyValue[0].trim();
-                String value = keyValue[1].trim();
-
-                switch (key) {
-                    case "rest":
-                    	bookingRecordDTO.setBookingRestName(value);
-                        break;
-                    case "date":
-                    	bookingRecordDTO.setBookingDate(value);
-                        break;
-                    case "time":
-                    	bookingRecordDTO.setBookingTime(value);
-                        break;
-                    case "number":
-                    	bookingRecordDTO.setGuestNum(Integer.parseInt(value));
-                        break;
-                    default:
-                        // Handle unknown key
-                        break;
-                }
-            }
-
-            bookingRecordDTOList.add(bookingRecordDTO);
-        }
-		
-        StringBuilder sb2 = new StringBuilder();
-        sb2.append("[");
-        for (int i = 0; i < bookingRecordDTOList.size(); i++) {
-        	BookingRecordDTO bookingRecordDTO = bookingRecordDTOList.get(i);
-            sb2.append("{");
-            sb2.append("\"rest\": \"").append(bookingRecordDTO.getBookingRestName()).append("\", ");
-            sb2.append("\"date\": \"").append(bookingRecordDTO.getBookingDate()).append("\", ");
-            sb2.append("\"time\": \"").append(bookingRecordDTO.getBookingTime()).append("\", ");
-            sb2.append("\"number\": ").append(bookingRecordDTO.getGuestNum());
-            sb2.append("}");
-
-            if (i < bookingRecordDTOList.size() - 1) {
-            	sb2.append(", ");
+            i++;
+            if (i < bookingRecord.size()) {
+            	sb.append(", ");
             }
         }
-        sb2.append("]");
+        sb.append("]");
 
-		model.addAttribute("bookingRecord", sb2.toString());
+		model.addAttribute("bookingRecord", sb.toString());
 		return "bookingRecord";
 	}
 	

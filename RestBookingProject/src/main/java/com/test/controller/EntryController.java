@@ -199,5 +199,9 @@ public class EntryController {
 	@GetMapping(value="/goTologinSuccessForUser2")
 	public String goTologinSuccessForUser2() {
 		return "loginSuccessForUser2";
-	}	
+	}
+	@RequestMapping("/goToReqAndLogin")
+	public String goToReqAndLogin() {
+		return "reqAndLogin5";
+	}
 }

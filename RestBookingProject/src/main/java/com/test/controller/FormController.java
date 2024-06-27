@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -141,5 +142,24 @@ public class FormController {
 	@GetMapping("/goToUpdateBookingRecordPage")
 	public String goToUpdateBookingRecordPage() {
 		return "updateBookingRecord";
+	}
+	
+	@PostMapping("/checkUserAccount")
+	@ResponseBody
+	public String checkUserAccount(@RequestParam String account) {
+		Optional<User> user = userRepositoryBySpringJPA.queryUserAccount(account);
+		if(user.isPresent()) {
+			return "帳戶存在。";
+		}
+		return "帳戶不存在！";
+	}
+	@PostMapping("/checkUser")
+	@ResponseBody
+	public String checkUser(@RequestParam String account,@RequestParam String password) {
+		Optional<User> user = userRepositoryBySpringJPA.queryUser(account,password);
+		if(user.isPresent()) {
+			return "帳密正確。";
+		}
+		return "帳密不正確！";
 	}
 }
