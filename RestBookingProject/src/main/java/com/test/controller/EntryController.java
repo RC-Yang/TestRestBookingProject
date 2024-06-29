@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.*;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +24,6 @@ import com.test.bean.Restaurant;
 import com.test.bean.User;
 import com.test.dao.RestDao;
 import com.test.dao.UserDao;
-import com.test.util.ControllerUtil;
 import com.test.util.EmailService;
 
 @Controller
@@ -54,6 +53,7 @@ public class EntryController {
 			session.setAttribute("account", user.getAccount());
 			session.setAttribute("password", user.getPassword());
 			session.setAttribute("userType", user.getUserType());
+
 			return "登入成功";
 		}
 		

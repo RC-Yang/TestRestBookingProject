@@ -2,8 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sp" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登入或註冊</title>
@@ -17,10 +19,11 @@
 	<script src="<%=request.getContextPath() %>/js/checkEmailForm.js"></script>
 </head>
 <script>
-
     $(document).ready(function(){
-        //const urlParams = new URLSearchParams(window.location.search);
-        //const action = urlParams.get('action');
+        //20240629新增
+        window.token = $("meta[name='_csrf']").attr("content");
+        window.header = $("meta[name='_csrf_header']").attr("content");
+        alert(window.token+"  "+window.header);
         
         const action = "${action}";
         // 先清空預設被激活的form與li的狀態
@@ -288,8 +291,8 @@
                     <div class="container">
                         <div class="row">
                             <sp:form modelAttribute="user" id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data">
-                            	
-                            	
+                            	<!--20240629新增-->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                 <div class="d-flex flex-row justify-content-evenly align-items-center my-3">
                                     <div class="form-check">
                                         <sp:radiobutton class="form-check-input" name="userType" id="userType1" path="userType" value="1"/>
@@ -428,6 +431,7 @@
                     <div class="container">
                         <div class="row">
                             <form id="login" method="post" action="<%=request.getContextPath() %>/entry/checkLogin">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                             	<div class="d-flex flex-row justify-content-evenly align-items-center my-3">
                                     <div class="form-check">
                                         <input type="radio" class="form-check-input" name="userType" id="userType"value="1"/>
@@ -452,7 +456,7 @@
                                 </div>
 
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-primary" onclick="checkLogInFormWithAjax();">提交</button>
+                                    <button type="button" class="btn btn-primary" onclick="checkLogInFormWithAjax();">提交</button>
                                     <button type="button" class="btn btn-danger" onclick="javascript:history.back();">取消</button>
                                 </div>
                             </form>
@@ -463,6 +467,7 @@
                     <div class="container">
                         <div class="row">
                             <form id="forgetPassword" method="post" action="<%=request.getContextPath() %>/entry/sendUpdatePasswordMail">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                 <div class="mb-5">
 	                                <label for="inputEmail3" class="form-label">請輸入要傳送重設密碼信件的郵件位置：</label>
 	                                <input type="email" class="form-control" id="email" name="email">
