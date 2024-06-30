@@ -2,10 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sp" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <meta name="_csrf" th:content="${_csrf.token}">
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登入或註冊</title>
@@ -23,7 +23,6 @@
         //20240629新增
         window.token = $("meta[name='_csrf']").attr("content");
         window.header = $("meta[name='_csrf_header']").attr("content");
-        alert(window.token+"  "+window.header);
         
         const action = "${action}";
         // 先清空預設被激活的form與li的狀態

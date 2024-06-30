@@ -54,6 +54,7 @@ function goToLoginSuccessPage(){
 	$.post({
         url: "http://localhost:8080/RestBookingProject/entry/login",
         beforeSend: function(xhr) {
+			alert(window.token+"  "+window.header);
 			xhr.setRequestHeader(window.header, window.token);
 		},success: function(data) {
 			alert("请求成功:", data);

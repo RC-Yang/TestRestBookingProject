@@ -54,6 +54,14 @@ public class EntryController {
 			session.setAttribute("password", user.getPassword());
 			session.setAttribute("userType", user.getUserType());
 
+			CsrfToken csrfToken = (CsrfToken) req.getAttribute(CsrfToken.class.getName());
+	        if (csrfToken != null) {
+	            String token = csrfToken.getToken();
+	            System.out.println("csrf token:"+token);
+	        } else {
+	            
+	        }
+	       
 			return "登入成功";
 		}
 		
