@@ -9,8 +9,6 @@ import java.util.Optional;
 import javax.servlet.http.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,14 +51,6 @@ public class EntryController {
 			session.setAttribute("account", user.getAccount());
 			session.setAttribute("password", user.getPassword());
 			session.setAttribute("userType", user.getUserType());
-
-			CsrfToken csrfToken = (CsrfToken) req.getAttribute(CsrfToken.class.getName());
-	        if (csrfToken != null) {
-	            String token = csrfToken.getToken();
-	            System.out.println("csrf token:"+token);
-	        } else {
-	            
-	        }
 	       
 			return "登入成功";
 		}
