@@ -131,6 +131,21 @@
 			$(".restData").css("display", "block");
 
 		});
+		//20240807新增動態檢查註冊email格式
+		var emailRegex=/^[a-zA-Z0-9][\w\.-]*@[\dA-Za-z][\dA-Za-z_\-]*[\dA-Za-z]\.[\dA-Za-z]{2,}/;
+    	$("#email").keyup(function(){
+    		var regexResult = emailRegex.test($("#reg #email").val());
+			if(regexResult){
+				$(".invalid-Email").css("display","block");
+				$(".invalid-Email").text("email格式正確！");
+				$(".invalid-Email").css("color","green");
+				return;
+			}
+    	$(".invalid-Email").css("display","block");
+    	$(".invalid-Email").text("email格式錯誤！");
+		$(".invalid-Email").css("color","red");
+		$(".invalid-Email").css("border-color","red");
+    	});
     });
  </script>
  <style>

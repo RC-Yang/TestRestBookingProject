@@ -107,9 +107,12 @@
 								<!-- 第二層的checkbox list -->
 								<div id="districtList" v-if="Object.keys(districts).length > 0">
 									<div v-for="(value, key) in districts" class="form-check"><!--:value指的是input 元素的 value 属性，而"value"指的是当前迭代中的 value-->
-										<input class="form-check-input" type="checkbox" :value="value" 
-											v-model="checkedDistrict[key]" @change="handleCheckedDistrict(key)" name="district" id="district">
-											<!--v-model在checkbox被勾選時被設定為true，接著透過雙向綁定，將值傳給checkedDistrict[key]-->
+										<input class="form-check-input" type="checkbox" 
+											v-model="showButton[key]" name="district" id="district" :value="value">
+											<!--v-model在checkbox被勾選時被設定為true，接著透過雙向綁定，將值傳給showButton[key]-->
+											<!-- v-for="(value, key) in districts"
+												透過以上迴圈，可以將每次迴圈取出的value，傳給:value="value"，當中的:value -->
+											<!-- :value="value"，""內的value對應{{ value }} -->
 										<label class="form-check-label">{{ value }}</label>
 									</div>			
 								</div>
@@ -139,6 +142,7 @@
 
 				<div id="districtButtonList" v-if="Object.entries(allDistricts).length > 0"><!--這是一個以一個個key-value對構成的二維陣列，並非map-->
 					<!--預設可以呈顯全部縣市行政區的button，只是會根據v-if判斷是否要呈顯-->
+					<!-- v-if 指令用于条件渲染元素。當v-if 为 true 时，相关联的元素会被渲染到 DOM 中；当v-if为 false 时，元素会从 DOM 中移除 -->
 					<button v-for="(value, key) in allDistricts" v-if="showButton[key]" class="btn btn-primary">{{ value }}</button>
 					<div v-for="(value, key) in allDistricts" class="form-check">
 						<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
@@ -220,7 +224,7 @@
             		});
 				},
 				handleCheckedDistrict(key){
-					this.showButton[key] = this.checkedDistrict[key];
+					//this.showButton[key] = this.checkedDistrict[key];
 					//修改vue變數；再利用v-if的雙向綁定功能，間接決定html button是否要呈顯
 				}		
 			}
