@@ -109,7 +109,7 @@
 									<div v-for="(value, key) in districts" class="form-check"><!--:value指的是input 元素的 value 属性，而"value"指的是当前迭代中的 value-->
 										<input class="form-check-input" type="checkbox" 
 											v-model="showButton[key]" name="district" id="district" :value="value">
-											<!--v-model在checkbox被勾選時被設定為true，接著透過雙向綁定，將值傳給showButton[key]-->
+											<!--v-model值與checkbox的checked屬性值雙向綁定，故當checked值為true時，showButton[key]必然為true。-->
 											<!-- v-for="(value, key) in districts"
 												透過以上迴圈，可以將每次迴圈取出的value，傳給:value="value"，當中的:value -->
 											<!-- :value="value"，""內的value對應{{ value }} -->
@@ -143,7 +143,12 @@
 				<div id="districtButtonList" v-if="Object.entries(allDistricts).length > 0"><!--這是一個以一個個key-value對構成的二維陣列，並非map-->
 					<!--預設可以呈顯全部縣市行政區的button，只是會根據v-if判斷是否要呈顯-->
 					<!-- v-if 指令用于条件渲染元素。當v-if 为 true 时，相关联的元素会被渲染到 DOM 中；当v-if为 false 时，元素会从 DOM 中移除 -->
-					<button v-for="(value, key) in allDistricts" v-if="showButton[key]" class="btn btn-primary">{{ value }}</button>
+					<span class="badge bg-primary" v-for="(value, key) in allDistricts" v-if="showButton[key]" >
+						{{ value }}<button type="button" class="btn-close" aria-label="Close" @click="closeBadge(key)">
+						<!-- 當事件被觸發（在這裡是按鈕被點擊時），Vue 會自動調用這個函數 -->
+						</button>
+					</span>
+					
 					<div v-for="(value, key) in allDistricts" class="form-check">
 						<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
 						<!--:disabled是Vue.js專有的屬性；只有当 showButton[key] 为 false（即按钮不显示）时，:disabled 属性才会被设置为 true-->
@@ -226,7 +231,12 @@
 				handleCheckedDistrict(key){
 					//this.showButton[key] = this.checkedDistrict[key];
 					//修改vue變數；再利用v-if的雙向綁定功能，間接決定html button是否要呈顯
-				}		
+				},
+				//20240807新增
+				closeBadge(key){
+					//this.showButton[key]=false;//vue3的寫法
+					this.$set(this.showButton, key, false);//vue2要這樣寫才能在值發生改變後，自動重新渲染vue元素
+				}
 			}
 			// other options here
 		});
