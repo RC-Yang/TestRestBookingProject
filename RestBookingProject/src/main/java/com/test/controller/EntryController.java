@@ -1,14 +1,17 @@
 package com.test.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.servlet.http.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,28 +37,49 @@ public class EntryController {
 	UserDao userDao;
 	@Autowired
 	EmailService emailService;
+	//20240810新增
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
 	@RequestMapping(value="/checkLogin")
 	@ResponseBody
-	public String checkLogin(HttpServletRequest req,HttpServletResponse resq) {
+	public ResponseEntity<Map<String, Object>> checkLogin(HttpServletRequest req,HttpServletResponse resq) {
 		String userType = req.getParameter("userType");
 		String account = req.getParameter("account");
 		String password = req.getParameter("password");
+		//舊的驗證使用者方法
+		//Optional<User> userOptional = userDao.queryUserByAccount(account, Integer.parseInt(userType),password);
 		
-		Optional<User> userOptional = userDao.queryUserByAccount(account, Integer.parseInt(userType),password);
-		
-		if(userOptional.isPresent()) {
-			HttpSession session = req.getSession();
-			User user = userOptional.get();
-			session.setAttribute("login", true);
-			session.setAttribute("account", user.getAccount());
-			session.setAttribute("password", user.getPassword());
-			session.setAttribute("userType", user.getUserType());
-	       
-			return "登入成功";
-		}
-		
-		return "登入失敗";		
+		try {
+            // 创建身份验证请求
+            UsernamePasswordAuthenticationToken authRequest = 
+                    new UsernamePasswordAuthenticationToken(account, password);
+
+            // 进行身份验证
+            Authentication authentication = authenticationManager.authenticate(authRequest);
+
+            // 将身份验证结果存储在 SecurityContext 中
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+    		
+    		HttpSession session = req.getSession();
+    		session.setAttribute("login", true);
+    		session.setAttribute("account", account);
+    		session.setAttribute("password", password);
+    		session.setAttribute("userType", userType);	
+    		
+    		Map<String, Object> response = new HashMap<>();
+    	    response.put("message", "登入成功");
+    	        
+	        // 获取当前 CSRF 令牌
+	        CsrfToken csrfToken = (CsrfToken) req.getAttribute(CsrfToken.class.getName());
+	        response.put("csrfToken", csrfToken.getToken());
+
+    	    return ResponseEntity.ok(response);
+        } catch (Exception e) {
+        	Map<String, Object> response = new HashMap<>();
+            response.put("message", "登入失敗");
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(response);
+        }
 	}
 	
 	@RequestMapping(value="/login")
@@ -64,10 +88,10 @@ public class EntryController {
 		String userType = req.getParameter("userType")==null?session.getAttribute("userType").toString():req.getParameter("userType");
 		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
 		String password = req.getParameter("password")==null?(String)session.getAttribute("password"):req.getParameter("password");
-		
-		Optional<User> userOptional = userDao.queryUserByAccount(account, Integer.parseInt(userType),password);
-		
-		if(userOptional.isPresent()) {
+		//20240810新增
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+
 			Optional<String> image = userDao.queryUserImage(req.getServletContext(),account, Integer.parseInt(userType));
 			session.setAttribute("userImage", image.get());
 			if(userType.equals("1")){

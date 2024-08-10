@@ -17,14 +17,18 @@ function checkLogInFormWithAjax(){
 	if(account!=null&&account.trim()!=''&&password!=null&&password.trim()!=''){
 		$.post({
 			url:$("#login").attr('action'),
-			data:$("#login").serialize(),
+			data:
+			$("#login").serialize(),
 			//jQuery Ajax接收的data，型別須為字串或javascript原生物件
 			//通过调用$("#login").serialize()，将得到一个类似于"username=xxx&password=yyy"的字串，
 			//這個字串會被添加至http request body內
 			success: function(response) {
-				if(response=="登入成功"){
+				if(response.message=="登入成功"){
+					//20240810修改：更新 CSRF 令牌
+					//var newCsrfToken = response.csrfToken;
+					//$("input[name='_csrf']").val(newCsrfToken);
 					//20240625修改；需呈顯於下一個jsp頁面但不須傳送到後端的值，存於localStorage
-					localStorage.setItem("loginSuccessMessage",response);
+					localStorage.setItem("loginSuccessMessage",response.message);
 					localStorage.setItem("loginSuccess",true);
 					window.location.href = 'http://localhost:8080/RestBookingProject/entry/login';
 				}

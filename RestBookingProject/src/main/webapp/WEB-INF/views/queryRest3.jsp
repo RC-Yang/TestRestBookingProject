@@ -13,9 +13,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    
-    <script>
-    </script>
+    <!-- 20240809新增CSRF參數 -->
+	<meta name="_csrf" content="${_csrf.token}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
 	<style>
 		*{
 			box-sizing:border-box;
@@ -86,6 +86,7 @@
 			<div id="title">查詢餐廳</div>
 			<!--20240622添加bootstrap手風琴UI-->
 			<form action="<%=request.getContextPath() %>/rest/queryRests" method="post">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				<div class="accordion" id="queryRestArea">
 					<div class="accordion-item">
 						<h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -150,8 +151,7 @@
 					</span>
 					
 					<div v-for="(value, key) in allDistricts" class="form-check">
-						<input type="hidden" :disabled="!showButton[key]" name="checkedDistrict" :value="value"/>
-						<!--:disabled是Vue.js專有的屬性；只有当 showButton[key] 为 false（即按钮不显示）时，:disabled 属性才会被设置为 true-->
+						<input type="hidden" v-if="showButton[key]" name="checkedDistrict" :value="value"/>
 					</div>
 				</div>
 				
@@ -197,10 +197,17 @@
 					//因vue.js不能用this來表示觸發事件的元素，故以event.target.value取代jQUery的$(this).val()
 					var selectedCountry = event.target.value;
 					var queryStringData = 'country=' + encodeURIComponent(selectedCountry);
+					
+					const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+					const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
 					$.ajax({
 						url: '/RestBookingProject/form/queryDistrict',
 						method: 'GET',
+						//20240809添加CSRF參數至AJAX請求
+						 headers: {
+				            [csrfHeader]: csrfToken // 将 CSRF token 添加到请求头
+				        },
 						data: queryStringData,
 						success: (data) => {
 							// 將獲取的包含key value的原生js物件，assign給districts這個原生js物件
