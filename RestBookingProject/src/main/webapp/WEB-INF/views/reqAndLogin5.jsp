@@ -520,20 +520,16 @@
 				var queryStringData = 'country=' + encodeURIComponent(selectedCountry);
 
 				$.ajax({
-					url: '<%=request.getContextPath()%>/form/queryDistrictForRest',  // 請替換為實際的API端點
+					url: '<%=request.getContextPath()%>/form/queryDistrictForRest',
 					method: 'GET',
 					data: queryStringData,
-					//dataType: 'json',//透過這個即可將後端的JSON格式ArrayList，轉型為js的array物件
+					//dataType: 'json',//可加可不加
 					success: function (districtJsonStr) {
 						// 根據AJAX獲取的數據動態生成第二層選單的選項
-						var districtArray = JSON.parse(districtJsonStr);
-						//單純的arraylist被回傳給前端，是會被瀏覽器自動轉型成javascript的字串物件，這樣是不能直接使用的
-						//所以若要取出json arraylist內的物件，
-						//需透過JSON.parse這個方法，將後端的JSON格式ArrayList，轉型為js的array物件
-						//上面將js字串轉型成js的array物件的方法有兩個，擇一使用即可
-						for (var i = 0; i < districtArray.length; i++) {
-							$("#districtMenu").append('<li><a class="dropdown-item districtAnchor" href="#" onclick="clickDistrict(this,event);">' + districtArray[i].districtName + '</a></li>');
-	
+						//後端回傳的是arraylist版本的json格式物件，這物件會自動被jQuery轉型為js的array物件，再將其assgin給回呼函數之參數
+						//故回呼函數之參數，可直接當成js array物件
+						for (var i = 0; i < districtJsonStr.length; i++) {
+							$("#districtMenu").append('<li><a class="dropdown-item districtAnchor" href="#" onclick="clickDistrict(this,event);">' + districtJsonStr[i].districtName + '</a></li>');
 						}
 					},
 					error: function (error) {

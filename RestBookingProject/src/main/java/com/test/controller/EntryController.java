@@ -69,10 +69,6 @@ public class EntryController {
     		
     		Map<String, Object> response = new HashMap<>();
     	    response.put("message", "登入成功");
-    	        
-	        // 获取当前 CSRF 令牌
-	        CsrfToken csrfToken = (CsrfToken) req.getAttribute(CsrfToken.class.getName());
-	        response.put("csrfToken", csrfToken.getToken());
 
     	    return ResponseEntity.ok(response);
         } catch (Exception e) {

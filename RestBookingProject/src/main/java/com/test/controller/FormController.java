@@ -86,11 +86,9 @@ public class FormController {
 	
 	@GetMapping("/queryDistrictForRest")
 	@ResponseBody
-	public String queryDistrictForRest(@RequestParam(name="country") String country) {
+	public List<District> queryDistrictForRest(@RequestParam(name="country") String country) {
 		List<District> districtList = formService.findDistrictsByCountry(country);
-
-		String districtJsonStr = new Gson().toJson(districtList);
-		return districtJsonStr;
+		return districtList;//透過@ResponseBody註釋，將arraylist物件轉型為json格式物件
 	}
 	
 	@RequestMapping(value="/queryRestStyle")
