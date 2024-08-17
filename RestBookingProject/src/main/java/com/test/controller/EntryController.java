@@ -8,6 +8,7 @@ import javax.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,9 +38,9 @@ public class EntryController {
 	UserDao userDao;
 	@Autowired
 	EmailService emailService;
-	//20240810新增
+	//20240817新增
 	@Autowired
-	private AuthenticationManager authenticationManager;
+	private  AuthenticationProvider authenticationProvider;
 	
 	@RequestMapping(value="/checkLogin")
 	@ResponseBody
@@ -56,7 +57,7 @@ public class EntryController {
                     new UsernamePasswordAuthenticationToken(account, password);
 
             // 进行身份验证
-            Authentication authentication = authenticationManager.authenticate(authRequest);
+            Authentication authentication = authenticationProvider.authenticate(authRequest);
 
             // 将身份验证结果存储在 SecurityContext 中
             SecurityContextHolder.getContext().setAuthentication(authentication);

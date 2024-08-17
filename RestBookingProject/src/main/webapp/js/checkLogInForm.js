@@ -24,9 +24,6 @@ function checkLogInFormWithAjax(){
 			//這個字串會被添加至http request body內
 			success: function(response) {
 				if(response.message=="登入成功"){
-					//20240810修改：更新 CSRF 令牌
-					//var newCsrfToken = response.csrfToken;
-					//$("input[name='_csrf']").val(newCsrfToken);
 					//20240625修改；需呈顯於下一個jsp頁面但不須傳送到後端的值，存於localStorage
 					localStorage.setItem("loginSuccessMessage",response.message);
 					localStorage.setItem("loginSuccess",true);
