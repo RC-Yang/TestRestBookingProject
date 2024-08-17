@@ -19,8 +19,6 @@ import com.test.dao.RestDao;
 import com.test.dao.RestRepositoryByJPA;
 import com.test.service.FormService;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 @Controller
 @RequestMapping("/rest")
 public class RestController {
