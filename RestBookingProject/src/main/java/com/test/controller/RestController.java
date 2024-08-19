@@ -58,10 +58,9 @@ public class RestController {
 				allQueryRest.add(rest);
 			}
 		}
-
 	
 		model.addAttribute("rests", allQueryRest);
-		
-		return "queryRestResult1";
+		//20240819修改
+		return "queryRestResult2";
 	}
 }

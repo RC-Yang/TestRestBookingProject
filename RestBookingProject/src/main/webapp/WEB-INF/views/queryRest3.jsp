@@ -211,7 +211,7 @@
 						data: queryStringData,
 						success: (data) => {
 							// 將獲取的包含key value的原生js物件，assign給districts這個原生js物件
-							this.districts = data;
+							this.districts = data;//data 的属性会被直接挂载到 Vue 实例上，故不用寫成this.data.districts;
 						},
 						error: (error) => {
 							console.error('Error fetching second layer options:', error);
