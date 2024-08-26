@@ -9,16 +9,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登入或註冊</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
-	<script src="<%=request.getContextPath() %>/js/checkRegForm.js"></script>
-	<script src="<%=request.getContextPath() %>/js/checkLogInForm.js"></script>
-	<script src="<%=request.getContextPath() %>/js/checkEmailForm.js"></script>
+	<script src="<%=request.getContextPath() %>/js/checkRegForm.js" nonce="${nonce}"></script>
+	<script src="<%=request.getContextPath() %>/js/checkLogInForm.js" nonce="${nonce}"></script>
+	<script src="<%=request.getContextPath() %>/js/checkEmailForm.js" nonce="${nonce}"></script>
 </head>
-<script>
+<script nonce="${nonce}">
     $(document).ready(function(){
         //20240629新增
         window.token = $("meta[name='_csrf']").attr("content");
@@ -117,7 +117,7 @@
     	}
     }
 </script>
-<script>
+<script nonce="${nonce}">
     document.addEventListener('DOMContentLoaded', function () {
 		const userRadio = document.getElementById('userType1');
 		const restRadio = document.getElementById('userType2');
@@ -129,7 +129,6 @@
 		restRadio.addEventListener('click', function () {
 			// 顯示額外的表單元素
 			$(".restData").css("display", "block");
-
 		});
 		//20240807新增動態檢查註冊email格式
 		var emailRegex=/^[a-zA-Z0-9][\w\.-]*@[\dA-Za-z][\dA-Za-z_\-]*[\dA-Za-z]\.[\dA-Za-z]{2,}/;
@@ -146,6 +145,13 @@
 		$(".invalid-Email").css("color","red");
 		$(".invalid-Email").css("border-color","red");
     	});
+    	//20240826修改：CSP不允許直接透過onclick呼叫函數，故改為以下寫法
+    	document.getElementById("submitLogin").addEventListener('click', function () {
+    		checkLogInFormWithAjax();
+		});
+    	document.getElementById("cancelSubmitLogin").addEventListener('click', function () {
+    		history.back();
+		});
     });
  </script>
  <style>
@@ -471,8 +477,8 @@
                                 </div>
 
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-primary" onclick="checkLogInFormWithAjax();">提交</button>
-                                    <button type="button" class="btn btn-danger" onclick="javascript:history.back();">取消</button>
+                                    <button type="button" id="submitLogin" class="btn btn-primary">提交</button>
+                                    <button type="button" id="cancelSubmitLogin"class="btn btn-danger">取消</button>
                                 </div>
                             </form>
                         </div>
@@ -500,7 +506,7 @@
         </div>
     </div>
 </body>
-<script>
+<script nonce="${nonce}">
 	//$(document).on("ready",function(){
 		$(document).ready(function(){
 			$(".countryAnchor").on("click",function(e){

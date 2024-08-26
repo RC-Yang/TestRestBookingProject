@@ -140,7 +140,7 @@
         </div>  
     </div>
 
-    <script>
+    <script nonce="${nonce}">
         //為實作分頁功能而new Vue物件
         new Vue({//Vue 2的new Vue()；在Vue 3要用Vue.createApp，不可使用new Vue()
 			el: '#app',//要將該vue物件跟該id範圍進行綁定

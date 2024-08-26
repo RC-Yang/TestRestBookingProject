@@ -8,7 +8,7 @@
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <title>訂位紀錄更新頁面e</title>
-    <script>
+    <script nonce="${nonce}">
         $(document).ready(function(){
             updateAvailableTimes();
 

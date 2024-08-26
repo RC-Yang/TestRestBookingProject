@@ -162,7 +162,7 @@
   			</form>			
 		</div>
     </div>
-	<script>
+	<script nonce="${nonce}">
 		new Vue({
 			el: '#app',
 			data: {
