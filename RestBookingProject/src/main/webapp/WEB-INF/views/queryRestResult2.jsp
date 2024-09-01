@@ -10,8 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>餐廳查詢結果</title>
 
-    <!-- 引入 Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- 引入 Bootstrap JavaScript 和 jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
@@ -89,7 +87,7 @@
                     <!--製作按下按鈕後，彈出視窗效果-->
                     <div class="caption">
                     <button type="button" class="btn btn-primary"
-                         data-toggle="modal" data-target="#exampleModal">餐廳詳細資訊</button>
+                         data-bs-toggle="modal" data-bs-target="#exampleModal">餐廳詳細資訊</button>
 
                     <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -114,7 +112,7 @@
 										
 										<button type="submit" class="btn btn-primary btn-lg">訂位</button>
 									</form>
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
                                 </div>
                             </div>
                             </div>
@@ -136,6 +134,9 @@
 		            :next-text="'Next'"
 		            :prev-text="'Previous'"
 		        ></b-pagination>
+	        </div>
+	        <div class="d-flex justify-content-center">
+	        	<button type="button" class="btn btn-danger" id="turnToHomeButton">回首頁</button>
 	        </div>
         </div>  
     </div>
@@ -163,5 +164,11 @@
 			}
         });
     </script>
+    <!-- 20240901新增返回首頁按鈕 -->
+	<script nonce="${nonce}">
+		document.getElementById('turnToHomeButton').addEventListener("click",function(){
+			window.location.href = 'http://localhost:8080/RestBookingProject/entry/login';
+		});
+	</script>
 </body>
 </html>
