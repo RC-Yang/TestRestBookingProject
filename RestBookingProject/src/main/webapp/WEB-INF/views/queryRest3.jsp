@@ -157,7 +157,7 @@
 				
 				<div class="text-center">
 					<button type="submit" class="btn btn-primary">查詢餐廳</button>
-					<button type="button" class="btn btn-danger" onclick="javascript:window.location.href = '/RestBookingProject/entry/login';">取消</button>
+					<button type="button" class="btn btn-danger" id="cancelButton">取消</button>
 				</div>
   			</form>			
 		</div>
@@ -246,6 +246,10 @@
 				}
 			}
 			// other options here
+		});
+		//20240901將返回前頁之功能移至script tag內
+		document.getElementById("cancelButton").addEventListener('click',function(){
+			window.location.href = '/RestBookingProject/entry/login';
 		});
 	</script>
 </body>

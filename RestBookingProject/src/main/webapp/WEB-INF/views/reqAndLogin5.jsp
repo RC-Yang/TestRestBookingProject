@@ -535,7 +535,13 @@
 						//後端回傳的是arraylist版本的json格式物件，這物件會自動被jQuery轉型為js的array物件，再將其assgin給回呼函數之參數
 						//故回呼函數之參數，可直接當成js array物件
 						for (var i = 0; i < districtJsonStr.length; i++) {
-							$("#districtMenu").append('<li><a class="dropdown-item districtAnchor" href="#" onclick="clickDistrict(this,event);">' + districtJsonStr[i].districtName + '</a></li>');
+							$("#districtMenu").append('<li><a class="dropdown-item districtAnchor" href="#">' + districtJsonStr[i].districtName + '</a></li>');
+						}
+						//20240901對行政區anchor設置事件監聽，以便能呼叫動態改寫城市+行政區之字串
+						for(var i=0;i<document.getElementsByClassName('districtAnchor').length;i++){
+							document.getElementsByClassName('districtAnchor')[i].addEventListener('click',function(event){
+								clickDistrict(this,event);
+							});
 						}
 					},
 					error: function (error) {
@@ -559,13 +565,13 @@
 		//設定餐廳地址欄位，自動被寫入縣市行政區(改成傳統js寫法)
 		function clickDistrict(element,event){
 			event.preventDefault();
-			
 			//var selectedDistrict = this.textContent;
 			var selectedDistrict = element.textContent;
 			var selectedCountry = $(".selected").text();
 			$('#restAddr').empty();
 			//$('#restAddr').text(selectedCountry+selectedDistrict);
 			$('#restAddr').val(selectedCountry+selectedDistrict);
-		}	
+		}
+		
 </script>
 </html>
