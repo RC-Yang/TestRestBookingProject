@@ -5,15 +5,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
+import java.util.*;
+
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.PortMapper;
+import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
@@ -25,7 +30,36 @@ public class TestSpringSecurity5xConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http//HttpSecurity物件的功能，就類似於一個清單，用於手動添加安全規定				
+		Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+		return http//HttpSecurity物件的功能，就類似於一個清單，用於手動添加安全規定
+				//啟用HSTS
+//				.headers(headers -> 
+//	                headers
+//	                    .httpStrictTransportSecurity(hsts -> 
+//	                        hsts
+//	                            .includeSubDomains(true) // 包含子域名
+//	                            .maxAgeInSeconds(31536000) // HSTS 的有效期，单位为秒（这里设置为一年）
+//	                    )
+//	            )
+				//requiresChannel這個方法，是用於設定瀏覽器跟伺服器之間通道的規則
+				//該方法的參數是函數，透過該函數來設定通道規則
+				//方法的參數以函數表示，是怎麼知道要傳什麼參數進函數？
+				//首先，当 requiresChannel() 方法被调用时，Spring Security 内部会创建用於設定通道規則之对象
+				//要傳什麼參數進函數，就是傳這個物件
+				//補充：
+				//即使只是呼叫requiresChannel() ，沒有傳遞任何參數進去，一樣會自動創建
+				//這種自動創建的行為，跟javascript中addEventListener("click",function(e){})中，回調函數function本身，可以傳入事件本身e作為參數一樣
+				//傳這個物件的寫法，就寫成channel ->
+//				.requiresChannel(channel -> {
+//					//接著即可使用該物件，設定通道規則
+//				    channel
+//				        .antMatchers("/**").requiresSecure();//專案內任何路徑url，通通都會被強制改成https開頭
+//				    logger.info("Setting requires secure for all requests");
+//				        }
+//				).portMapper((portMapper) ->
+//	                portMapper
+//	                .http(8080).mapsTo(8443)
+//				)
 				.authorizeRequests(
 						authorizeRequests -> authorizeRequests
 								.antMatchers("/image/**", "/js/**", "/entry/goToLogIn", "/entry/goToReg",
