@@ -33,7 +33,7 @@
         header .headernav nav a::before{
             /* 這樣就是設定偽元素(底線)在anchor下一層(非anchor下方) */
             content: '';/*一定要寫，不然偽元素無法存在*/
-            display:inline-block;/*偽元素預設是inline，要改成block才能有寬高*/
+            display:block;/*偽元素預設是inline，要改成inline-block或block才能有寬高*/
             height: 4px;
             width: 0%;  
             background-color: #000000;
@@ -41,9 +41,9 @@
             /* 令該偽元素在anchor下方 */
             position: absolute;
             left: 0;
-            bottom: 0;  
-            
-            transition: 0.25s;/*寫在這可以同時應付滑鼠移入跟移出事件*/
+            bottom: 0;
+            /*新增轉場效果與設定轉場持續時間*/
+            transition: 0.25s;/*寫在這可以同時應付滑鼠移入跟移出事件，因為元素的任何狀態，都繼承了元素的默认样式*/
         }
 
     @media(max-width:799px){
@@ -139,49 +139,45 @@
         header div{
             /*background-color: rgb(212, 124, 23);*/
             width: 40%;
-            height:100%;
+            height:100%;/*若父元素高度確定，則該元素的高度將等於它的父容器的高度*/
         }
         header div .headerimg{
-            display:inline-block;/*改成block也可*/
-            height:100%;
+            display:inline-block;
+            height:100%;/*若父元素高度確定，則該元素的高度將等於它的父容器的高度*/
             /* 這樣LOGO會有個預設寬度 */
             /* 改變LOGO預設寬度 */
             /* 方法一 */
             /*width:300px;*/
-        /* 方法二 */
-            transform: scaleX(3);
-            transform-origin:0 0;
+        	/* 方法二 */
+        	transform-origin:0 0;/*手動設置圖片擴張起點為左下角*/
+            transform: scaleX(3);/*圖片以左下角為起點，向右擴張3倍*/
         }
         /* header正下方第二個div */
         header .headernav{
-            /*background-color: aquamarine;*/
+            width:60%;
+            /*設置彈性盒子，讓子容器可以根據父容器彈性變化位置*/
             display: flex;
+            /*設置子容器位置由上往下*/
             flex-direction:column;
+            /*設置子容器剛好貼到最上方與最下方*/
             justify-content: space-between;
-            /* 設定第2個div要占滿爸爸剩餘的空間 */
-            /* width:60%; */
-            /* 要讓第2個div可以依照爸爸剩餘的空間來動態縮放 */
-            flex:1;
         }
         header .headernav nav{
-            width:100%;/*這樣width也會有足夠的空間來放anchor，就可彈性增加anchor*/
+            /*width:100%;/*如果 <nav> 被放在塊級元素內，例如 <div> 或是 <body>，它的寬度會默認為父元素的 100%*/
             text-align: right;
             padding-right: 30px;
         }
 
         /* 如果anchor發生hover事件，after偽元素就做以下動作 */
         header .headernav nav a:hover::before{
-            width:100%;      
+            width:100%; 
         }
         /* main area */
         main{
             width:100%;
-        }
-        #mainDiv{
-            width:100%;
             height:70vh;
         }
-        #mainDiv .img,.carousel-inner,.carousel-item{
+        #mainDiv,#mainDiv *:not(.carousel-indicators,button,button *){
             width:100%;
             height:100%;
         }
