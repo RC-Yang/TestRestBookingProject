@@ -163,6 +163,7 @@
     *{
         margin: 0;
         padding: 0;
+        box-sizing:border-box;
     }
     #logo{
     	height:25vh;
@@ -204,28 +205,18 @@
         padding:0 20px;
     }
     /*表單區*/
-    .tab-content ,.tab-content div{
-        display:block;/*強制所有div皆為block*/
-        height: 100%; 
-        padding-left: 0;
-        padding-right: 0;
-    }
-
     form{
-        display:block;/*強制所有form皆為block*/
-        padding:10px 20vw!important;
+        /*display:block;*//*form預設即為block*/
     }
     
-    .nav-link.active{
-        background-color: #799bc2!important;
-        border-bottom-color: #799bc2!important;
+    .nav-tabs .nav-link.active{/*自定義的css樣式，通常優先於bootstrap預設的樣式，但更具體的選擇器可以確保提高優先權*/
+        background-color: #799bc2;
+        border-bottom-color: #799bc2;
     }
     .tab-pane.active{
-        background-image: linear-gradient(180deg,#799bc2,#fff)!important;
+    	padding:10px 40px;
+        background-image: linear-gradient(180deg,#799bc2,#fff);
     }
-	.inputDropdown{
-		padding-bottom:10px;
-	}
 </style>
 <body>
     <!-- 確認要寄出修改密碼信件的modal -->
@@ -315,7 +306,7 @@
                             <sp:form modelAttribute="user" id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data">
                             	<!--20240629新增-->
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                <div class="d-flex flex-row justify-content-evenly align-items-center my-3">
+                                <div class="d-flex flex-row justify-content-evenly align-items-center">
                                     <div class="form-check">
                                         <sp:radiobutton class="form-check-input" name="userType" id="userType1" path="userType" value="1"/>
                                         <label class="form-check-label userType" for="userType1">
@@ -382,9 +373,9 @@
 									<input type="text" class="form-control" id="restName" name="restName"/>
                                 
                                 </div>
-                                <div class="mb-5 restData">
+                                <div class="mb-3 restData">
                                     <label for="restAddr" class="form-label">餐廳地址：</label>
-									<div class="d-flex inputDropdown">
+									<div class="d-flex" style="padding-bottom:10px;">
 										<div class="dropdown">
 										  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
 											請選擇縣市：
@@ -422,7 +413,6 @@
 									<input type="hidden" id="selectedCountry" name="selectedCountry" value="">
 									<input type="hidden" id="selectedDistrict" name="selectedDistrict" value="">
                                     <input type="text" class="form-control" id="restAddr" name="restAddr" />
-                                    
                                 </div>
                                 <div class="mb-3 restData">
 								    <label for="restTel" class="form-label">餐廳電話：</label>
@@ -455,7 +445,7 @@
                             <form id="login" method="post" action="<%=request.getContextPath() %>/entry/checkLogin">
                                 <!--20240629新增-->
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                            	<div class="d-flex flex-row justify-content-evenly align-items-center my-3">
+                            	<div class="d-flex flex-row justify-content-evenly align-items-center">
                                     <div class="form-check">
                                         <input type="radio" class="form-check-input" name="userType" id="userType"value="1"/>
                                         <label class="form-check-label userType" for="userType">
