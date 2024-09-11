@@ -18,40 +18,44 @@
             padding:0;
             box-sizing: border-box;
         }
-
+    	header{
+	        height:30vh;
+	        width:100%;
+	
+	        display:flex;
+	        justify-content: center;
+	        align-items: center;
+	        flex-direction:column;
+	    }		
         .headerImgDiv{
             width:100%;
-            /*調整子物件版面step1*/
-            display:flex!important;/*必須要加!important，不知為何*/
-            /*調整子物件版面step2*/
+            height:20vh;
+
+            display:flex;
             justify-content:space-around;
             align-items: center;
-            
-            /*去除圖片上下方多餘空白*/
-            display:inline-block;
-            margin-top:-202px;
-            margin-bottom:-202px;
-            
         }
         .headerImgDiv .headerimg{
-            /* 變形圖片當中的縮放圖片 */
-            transform:scale(1,0.7);
+        	/*圖片需剛好占有全部高的20%，而現在該圖片長寬為562px；那就讓圖片外部空間總共為20vh-562px，這樣的話上下外部空間就同為calc(10vh - 281px)*/
+           	margin-bottom:calc(10vh - 281px);
+           	margin-top:calc(10vh - 281px);
         }
         .headerImgDiv .headerUserImg{
         	transform: scale(0.3, 0.3);
         }
         .headerNavDiv{
-            /* 該div雖有高度，但這其實是子元素的高度，該div高度目前不明，所以需要以下兩行的設定: */
-            /* 設定該元素的高度，根據子元素的高度來自適應 */
-            display: flex;
-            height: fit-content; 
+            /* 設定該元素的高度，根據子元素的高度來自適應 */           
+            height: 10vh;
+            width:100%;
 
             background-color: aquamarine;
         }
         .headerNav{
             /*強制讓該元素置中*/
             width:70%;
-            margin: 0 auto;
+            margin: 0 15%;
+            height: 100%;
+             
             /*強制讓子元素在該元素內，分散置中*/
             display: flex;
             justify-content:space-between;
@@ -63,14 +67,17 @@
 
            display: inline-block;
            width:15%;
-           padding:20px 10px;
+           height: 100%;
+           /*強制讓純文字在該元素內，完全置中*/
+           display: flex;
+           justify-content:center;
+           align-items: center;
 
-           text-align: center;
+           transition:0.25s;
         }
         .headerNav a:hover{
             /*a:hover繼承a既有的樣式，故不需重新寫樣式  */
-           background-color: darkgreen!important;
-           transition:0.25s!important;
+           background-color: darkgreen;          
         }
         /* 看起來似乎可以正常運作，但前兩個anchor運作不正常，沒有在hover事件發生時改變背景色 */
         /* 看起來是z軸方向的上層元素，覆蓋住了anchor，所以添加以下code，提升anchor在z軸的高度: */
@@ -78,9 +85,6 @@
             position: relative;
         }
         .headerNav a{
-            z-index: 99;
-        }
-        .headerNav a:hover{
             z-index: 99;
         }
         /* code添加完成；header css設定完成 */

@@ -190,10 +190,9 @@
             width:100%;
             background-color: #73ff00bb;
             height:10vh;
-
+			/*決定父元素的content完全置中(故父元素內即使是純文字，也可置中)*/
             display: flex;        
-            /*對兒子本身置中*/
-            justify-content: center;/*只有水平置中*/
+            justify-content: center;
             align-items: center;
         }
     }

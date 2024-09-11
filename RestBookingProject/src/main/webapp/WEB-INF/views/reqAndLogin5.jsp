@@ -165,24 +165,26 @@
         padding: 0;
     }
     #logo{
-        position: absolute;/*會找到body去定位，效果類似float*/
-        top:0;
-        left: 0;
-        /* 限制類float區塊的大小 */
-        height:15%;
-        width:15%;
-        
+    	height:25vh;
+        width:100%;
+        /*現圖片高為25vh，要將該圖片高縮為100px的話，需要將外部空間自上、下方來往下、上拉。將外部空間自上、下方來往下、上拉後，此時上+下方+圖片高仍為25vh，
+        又圖片高為100px，且上下方需相等，故上方要向下拉12.5vh-50、下方要向上拉12.5vh-50
+        又因為外部空間是自上、下方往下、上拉，故外部空間margin須為負值，故12.5vh-50px變成50px - 12.5vh*/
+        margin-top:calc(50px - 12.5vh);
+        margin-bottom:calc(50px - 12.5vh);
     }
     .headerimg{
-        display:block;
-        /* 讓圖片填滿上一層div */
-        width:100%;
+    	/* 讓圖片填滿上一層div */
+        display:block; 
         height:100%;
-        /* 對logo的x y軸方向進行延伸變形 */
-        transform: scale(2,1.5);
-        transform-origin: 0 0;
-        /* 讓logo上方留白不要太多 */
-        margin-top:-20px;
+        /*避免圖片變形*/
+        object-fit:cover;
+        
+		padding-left:calc(50vw - 87.9px);
+		padding-right:calc(50vw - 87.9px);
+		/*margin-top:calc(50px - 12.5vh);
+        margin-bottom:calc(50px - 12.5vh);*/
+        /*為何不是寫在這？因為該圖下方無元素，無法透過從該圖下方拉取空間，也就無法使用margin-bottom*/
     }
     body .container,body .row{
         display:block;/*強制所有div皆為block*/
@@ -190,10 +192,10 @@
     }
     #title{
         /* width:100%; *//*block預設width即為100%*/
-        text-align: center;
-        padding:10px 30vw;
+        display:flex;
+        justify-content:center;
+        align-items:center;
         font-size: 36px;
-        margin-top: 50px;
     }
     .nav{
         display: flex;
@@ -292,9 +294,9 @@
 	</div>
 
     <div id="logo"><img src="https://imgur.com/YtOejpS.png" class="headerimg"></div>
+    <div id="title">登入或註冊</div>
     <div class="container">
         <div class="row">
-            <div id="title">登入或註冊</div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">註冊</button>

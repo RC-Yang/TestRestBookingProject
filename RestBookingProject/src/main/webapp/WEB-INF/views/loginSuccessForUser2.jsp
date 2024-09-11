@@ -17,6 +17,13 @@
     }
     #header{
         height:20vh;
+        /*瀏覽器可用之寬，目前由width、margin平分，width+margin=100%，但margin尚未設定，故其為0，故此時width:100%*/
+        /*width:100%*/
+        margin-right:5%;/*該header元素，外部空間向右加5%*/
+        /*原本width為100%，前面設定+5%，若還要讓整體布局為100%，則width須為95%*/
+        /*width:95%*/
+        margin-left:-3%;/*該header元素，內部空間向左加3%*/
+        /*原本width為95%、margin-right為5%，又設定-3%，若還要讓整體布局為100%，則width須為98%*/
         width:98%;
 
         display:flex;/*這樣即可將一組包含div元素在內的多個元素，整併成只有一行，也就是單一div元素，不會單獨占有整個一行*/
@@ -24,9 +31,6 @@
         align-items: center;
 
         margin-top:20px;/*因現為border-box，padding+content=height=20vh=固定值，這樣的話如果要以padding來調整位置，必然影響到content，導致內容失真，故不能使用padding來調整*/
-        margin-right:5%;/*這時需要於水平方向讓內容向左微調；這時水平方向為width:100%，內容佔據全部；而既然不能用padding來設定位置，故設成width:95%;margin-right:5%;*/
-        margin-left:-3%;/*這時要將logo向外推；而既然將margin設為正數，表示將內容向中央推、那麼將margin設為負數，表示將內容向外推*/
-        /*原本width為100%，前面設定+5%、-3%，若還要讓整體布局為100%，則width須為98%*/
     }
     #header #userImg{
         height:100%;/*讓該img元素的大小，剛好依父元素大小來縮放*/
@@ -40,21 +44,21 @@
         justify-content: center;
         align-items: center;
     }
-    #navigator a{/*受父元素的flex影響，此時anchor會從inline元素，變成flex元素*/
+    #navigator a{
         height: 100%;
         width:15%;
-        /*要對子元素(這裡是超連結文字充當子元素角色)，進行水平垂直置中*/
+        /*在父元素決定其content的布局，這樣的話content本身是子元素還是純文字就沒有差別了*/
         display:flex;
         justify-content: center;
         align-items: center;
              
         color: black;
         text-decoration: none;
+        /*任何html元素預設的背景色，都是無色透明的；故這裡就不用特別設定背景色*/
+        transition: 0.25s;
     }
     #navigator a:hover{
         background-color: DarkGreen;
-        transition: 0.25s;
-        text-decoration: none;
     }
     main{
         height:57vh;
