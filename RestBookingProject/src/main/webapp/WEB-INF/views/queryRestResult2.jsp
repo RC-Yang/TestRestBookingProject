@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page trimDirectiveWhitespaces="true" %>
 <%@ page import="java.util.Base64" %>
 
 <!DOCTYPE html>
@@ -28,6 +29,9 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>	
 	<!-- BootstrapVue JavaScript -->
 	<script src="https://unpkg.com/bootstrap-vue@2.21.2/dist/bootstrap-vue.js"></script>
+	
+	<meta name="_csrf" content="${_csrf.token}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
 
     <style>
         *{
@@ -61,12 +65,12 @@
             <div class="col-12 text-center title">餐廳查詢結果</div>
         </div>
         <div class="row">
-            <div class="col-12 text-center py-3">您查詢的條件是：${country}的
-			<c:forEach var="district" items="${districtList}">
-				<!-- 输出数组的每个元素 -->
-				${district}&nbsp;
-			</c:forEach>
-			的餐廳</div>
+            <div class="col-12 text-center py-3" id="queryCondition">您查詢的條件是：位於
+				<c:forEach var="district" items="${checkedDistrictList}" varStatus="status">
+					${district}<c:if test="${!status.last}">、</c:if>
+				</c:forEach>
+			的餐廳
+			</div>
         </div>
     </div>
     <div class="container queryResult" id="queryResult">
@@ -87,10 +91,10 @@
                     <!--製作按下按鈕後，彈出視窗效果-->
                     <div class="caption">
                     <button type="button" class="btn btn-primary"
-                         data-bs-toggle="modal" data-bs-target="#exampleModal">餐廳詳細資訊</button>
+                         data-bs-toggle="modal" data-bs-target="#restModal${status.index}">餐廳詳細資訊</button>
 
                     <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="restModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -103,6 +107,8 @@
                                 </div>
                                 <div class="modal-footer">
 									<form method="post" action="<%=request.getContextPath() %>/booking/goToBooking">
+										<input type="hidden" name="_csrf" value="${_csrf.token}"/>
+										 
 										<input type="hidden" name="restId" id="restId" value="${rest.id}">
 										<input type="hidden" name="restName" id="restName" value="${rest.name}">
 										<input type="hidden" name="restAddress" id="restAddress" value="${rest.address}">
@@ -125,7 +131,8 @@
             <!-- 呈顯動態資料區塊 end-->
             <!-- 20240819新增 -->
             <div class="d-flex justify-content-center"><!-- 讓頁碼清單置中 -->
-	            <!-- 當Vue分頁套件被點擊頁碼時，Vue分頁套件(<vue-pagination>組件)的值，即可對currentPage賦值，從而引發Vue物件控制範圍內，view重新渲染(跟呈顯(v-if、v-show)有關的函數重新執行) -->
+	            <!-- v-model 將 currentPage 與 <b-pagination> 的當前頁碼給雙向綁定，
+	            從而引發Vue物件內，函數{}內含的currentPage被更新，這讓該函數會重新執行 -->
 	            <b-pagination
 		            v-model="currentPage"
 		            :total-rows="totalItems"
@@ -153,7 +160,7 @@
 				};//跟一般寫法是return XXX;這樣的意思一樣
 			},
 			methods:{
-				//只要v-model進行綁定的值發生變化，就會在Vue物件控制範圍內重新渲染，這樣的話，跟v-if、v-show綁定的函數都會被執行。故該函數便會重新執行
+				//只要currentPage的值發生變化，該函數，這樣的話，跟v-if、v-show綁定的函數都會被執行。故該函數便會重新執行
 				showItem(index){
 					if(index>=(this.currentPage-1)*this.itemsPerPage&&
 							index<this.currentPage*this.itemsPerPage){
@@ -164,11 +171,15 @@
 			}
         });
     </script>
-    <!-- 20240901新增返回首頁按鈕 -->
+   
 	<script nonce="${nonce}">
+	 	<!-- 20240901新增返回首頁按鈕 -->
 		document.getElementById('turnToHomeButton').addEventListener("click",function(){
 			window.location.href = 'http://localhost:8080/RestBookingProject/entry/login';
 		});
+		<!--20241215處理queryCondition文字區域多餘空白之問題-->
+		document.getElementById('queryCondition').textContent=
+			document.getElementById('queryCondition').textContent.replace(/\s+/g, "").trim();
 	</script>
 </body>
 </html>

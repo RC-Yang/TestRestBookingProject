@@ -41,19 +41,17 @@ public class RestController {
 	@RequestMapping(value="/queryRests")
 	public String queryRests(Model model,@RequestParam String country
 			,@RequestParam String[] checkedDistrict) {
-
-		model.addAttribute("country", country);
+		//20241215修正被選中的的城市與行政區，呈顯的方式
+		model.addAttribute("checkedDistrictList", Arrays.asList(checkedDistrict));
 	
 		List<Restaurant> allQueryRest = new ArrayList<>();
 		
-		for(String cityAndDistrict:checkedDistrict) {
-			String city = cityAndDistrict.substring(0, 3);
-			String district=cityAndDistrict.substring(3);
+		for(String district:checkedDistrict) {
 			
 			//使用JPA
 			//List<Restaurant> rests = restRepository.findRestsByDistrictJoinImage(dis);
 			//使用Spring JDBC
-			List<Restaurant> rests = restDao.getRestsByDistrictJoinImage(city, district);
+			List<Restaurant> rests = restDao.getRestsByDistrictJoinImage(district.substring(0, 3), district.substring(3));
 			for(Restaurant rest:rests) {
 				allQueryRest.add(rest);
 			}

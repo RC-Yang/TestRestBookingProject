@@ -20,7 +20,10 @@
                     { orderable: false, targets: [4,5] } // 設置禁用第4列和第5列的排序功能（索引從0開始）
                 ],
                 language: {
-                    "lengthMenu": "一頁_MENU_筆", // 修改 "Entries per page" 這段預設文字
+                    lengthMenu: "一頁_MENU_筆",
+                    info:"顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆訂位記錄",
+                    infoEmpty: "該帳戶無訂位資料",
+                    emptyTable: "該帳戶無訂位資料"
                 }
             });
         });
@@ -82,7 +85,7 @@
 
     <div class="container">
         <div class="row">
-            <h2>修改/刪除訂位</h2>
+            <h2>查詢/修改/刪除訂位</h2>
             <table id="bookingRecordTable" class="table table-striped table-borderd">
                 <thead>
                     <tr>
@@ -95,24 +98,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="bookingRecord" items="${bookingRecord}">
-                        <c:set var="bookingTime" value="${bookingRecord.bookingTime}" /><!--要用jstl，對${bookingRecord.bookingTime}進行substring處理-->
-                        <tr> 
-                            <td>${bookingRecord.bookingRest.name}</td>
-                            <td>${bookingRecord.bookingDate}</td>
-                            <td>${fn:substring(bookingTime, 0, 5)}</td><!--${bookingRecord.bookingTime}-->
-                            <td>${bookingRecord.guestNum}</td>
-                            <td><button type="button" class="btn btn-success" onclick="goToUpdateBookingRecordPage(
-                              '${bookingRecord.bookingRest.name}', '${bookingRecord.bookingDate}', '${fn:substring(bookingTime, 0, 5)}','${bookingRecord.guestNum}'
-                            );">修改</button></td>
-                            <td> 
-                                <form action="" method="post" id="bookingRecordForm${bookingRecord.bookingId}" name="bookingRecordForm${bookingRecord.bookingId}">
-                                    <input type="hidden" id="bookingRecordId" name="bookingRecordId" value="${bookingRecord.bookingId}"/>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBookingRecord('${bookingRecord.bookingId}');">刪除</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </c:forEach>
+                	<c:if test="${bookingRecord.size()>0}">
+	                    <c:forEach var="bookingRecord" items="${bookingRecord}">
+	                        <c:set var="bookingTime" value="${bookingRecord.bookingTime}" /><!--要用jstl，對${bookingRecord.bookingTime}進行substring處理-->
+	                        <tr> 
+	                            <td>${bookingRecord.bookingRest.name}</td>
+	                            <td>${bookingRecord.bookingDate}</td>
+	                            <td>${fn:substring(bookingTime, 0, 5)}</td><!--${bookingRecord.bookingTime}-->
+	                            <td>${bookingRecord.guestNum}</td>
+	                            <td><button type="button" class="btn btn-success" onclick="goToUpdateBookingRecordPage(
+	                              '${bookingRecord.bookingRest.name}', '${bookingRecord.bookingDate}', '${fn:substring(bookingTime, 0, 5)}','${bookingRecord.guestNum}'
+	                            );">修改</button></td>
+	                            <td> 
+	                                <form action="" method="post" id="bookingRecordForm${bookingRecord.bookingId}" name="bookingRecordForm${bookingRecord.bookingId}">
+	                                    <input type="hidden" id="bookingRecordId" name="bookingRecordId" value="${bookingRecord.bookingId}"/>
+	                                    <button type="button" class="btn btn-danger" onclick="deleteBookingRecord('${bookingRecord.bookingId}');">刪除</button>
+	                                </form>
+	                            </td>
+	                        </tr>
+	                    </c:forEach>
+                    </c:if>
                 </tbody>
             </table>
             <div style="text-align: center;">

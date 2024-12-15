@@ -60,27 +60,8 @@ public class BookingController {
 		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
 		List<BookingRecord> bookingRecord = bookingRepository.findBookingRecordsByGuestId(Integer.parseInt(account));
 
-		//20240623新增		
-        StringBuilder sb = new StringBuilder();
-        int i =0;
-        sb.append("[");
-        for (BookingRecord record : bookingRecord) {
-            sb.append("{");
-            sb.append("\"rest\": \"").append(record.getBookingRest().getName()).append("\", ");
-            sb.append("\"date\": \"").append(record.getBookingDate()).append("\", ");
-            sb.append("\"time\": \"").append(record.getBookingTime()).append("\", ");
-            sb.append("\"number\": ").append(record.getGuestNum());
-            sb.append("}");
-
-            i++;
-            if (i < bookingRecord.size()) {
-            	sb.append(", ");
-            }
-        }
-        sb.append("]");
-
-		model.addAttribute("bookingRecord", sb.toString());
-		return "bookingRecord";
+		model.addAttribute("bookingRecord", bookingRecord);
+		return "bookingRecord2";
 	}
 	
 	@GetMapping("/goToUpdateBookingRecord")
