@@ -6,6 +6,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    
+    <meta name="_csrf" content="${_csrf.token}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
+
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -113,6 +117,8 @@
 	                                <form action="" method="post" id="bookingRecordForm${bookingRecord.bookingId}" name="bookingRecordForm${bookingRecord.bookingId}">
 	                                    <input type="hidden" id="bookingRecordId" name="bookingRecordId" value="${bookingRecord.bookingId}"/>
 	                                    <button type="button" class="btn btn-danger" onclick="deleteBookingRecord('${bookingRecord.bookingId}');">刪除</button>
+	                                
+	                                	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	                                </form>
 	                            </td>
 	                        </tr>

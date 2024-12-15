@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="_csrf" content="${_csrf.token}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
+    
     <!-- 引入 Bootstrap CSS -->
     <!-- 引入 Bootstrap JavaScript 和 jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -137,7 +141,7 @@
         <h1>${restName}訂位</h1>
     </header>
     <main>
-        <form action="<%=request.getContextPath() %>/booking/makeReservation" method="post" id="bookingForm">
+        <form id="bookingForm">
 			<label for="name">姓名：</label>
             <input type="text" id="name" name="name" required>
 
@@ -167,6 +171,8 @@
 			<button id="confirm" type="button" onclick="window.location.href = 'http://localhost:8080/RestBookingProject/entry/goTologinSuccessForUser'">返回首頁</button>
 			<input type="hidden" id="restId" name="restId" value="${restId}">
 			<input type="hidden" id="restName" name="restName" value="${restName}">
+        
+        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </main>
 </body>
