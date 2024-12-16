@@ -75,10 +75,10 @@
             };
 
             // 初始化可選時間
-            updateAvailableTimes(businessHours);
+            initAvailableTimes(businessHours);
 
             // 函數：根據後端營業時間更新可選時間
-            function updateAvailableTimes(businessHours) {
+            function initAvailableTimes(businessHours) {
                 // 清空訂位時間下拉式選單內所有選項
                 $("#time").empty();
 

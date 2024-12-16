@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -94,11 +95,56 @@ public class BookingController {
 	    }
 	
 	    // 执行訂位的其他相關操作，例如更新座位狀態等
-	    restRepository.addBookingData(Integer.parseInt(restId),java.sql.Date.valueOf(date), 
+	    int id = restRepository.addBookingData(Integer.parseInt(restId),java.sql.Date.valueOf(date), 
 	    		Time.valueOf(LocalTime.parse(time)),Integer.valueOf(guests),
 	    		Integer.parseInt(req.getSession().getAttribute("account").toString()));
 
+	    //訂位資訊存於session，以便需要時可用
+	    HttpSession session = req.getSession();
+	    session.setAttribute("bookingId", id);
+	    session.setAttribute("name", name);
+	    session.setAttribute("phone", phone);
+	    session.setAttribute("restId", restId);
+	    session.setAttribute("restName", restName);
+	    session.setAttribute("bookingDate", date);
+	    session.setAttribute("bookingTime", time);
+	    session.setAttribute("guestNum", guests);
+
 	    return "於"+restName+"的"+date+"，"+time+"的"+guests+"位客人，訂位成功！";
+	}
+	
+	@PostMapping("/updateReservation")
+	@ResponseBody
+	public String updateReservation(
+			@RequestParam("bookingId")String bookingId,
+			@RequestParam("bookingDate")String date,
+			@RequestParam("bookingTime")String time,
+			@RequestParam("guestNum")String guestNum,
+			@RequestParam("restId")String restId,
+			@RequestParam("restName")String restName,HttpServletRequest req) {
+		
+		HttpSession session = req.getSession();
+		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
+	    // 檢查日期和時間是否在營業時間內
+	    if (!isWithinBusinessHours(date, time,Integer.parseInt(restId))) {
+	        return "訂位失敗：不在營業時間內";
+	    }
+	    // 檢查是否還有足夠的位子
+	    if (!isSeatsAvailable(Integer.parseInt(restId),java.sql.Date.valueOf(date),
+	    		Time.valueOf(LocalTime.parse(time)),Integer.parseInt(guestNum))) {
+	        return "訂位失敗：座位不足";
+	    }
+	
+	    // 执行訂位的其他相關操作，例如更新座位狀態等
+	    BookingRecord result = restRepository.updateBookingData(Integer.parseInt(bookingId),Integer.parseInt(restId),java.sql.Date.valueOf(date), 
+	    		Time.valueOf(LocalTime.parse(time)),Integer.parseInt(guestNum),Integer.parseInt(account));
+
+	    //訂位資訊存於session，以便需要時可用
+	    session.setAttribute("bookingDate", date);
+	    session.setAttribute("bookingTime", time);
+	    session.setAttribute("guestNum", guestNum);
+
+	    return "於"+restName+"的"+date+"，"+time+"的"+guestNum+"位客人，訂位修改成功！";
 	}
 
     private boolean isWithinBusinessHours(String date, String time,Integer restId) {

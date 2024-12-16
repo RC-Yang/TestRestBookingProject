@@ -64,7 +64,7 @@ public class RestRepositoryByJPA{
         return result;
     }
     @Transactional
-    public void addBookingData(Integer restId, Date bookingDate
+    public int addBookingData(Integer restId, Date bookingDate
 			, Time bookingTime,Integer seat,Integer guestId) {
     	//bookingId已透過SQL，設置為AUTO_INCREMENT，不須在此額外做設定
     	BookingRecord bookingRecord = new BookingRecord();
@@ -78,7 +78,29 @@ public class RestRepositoryByJPA{
     	bookingRecord.setGuestId(guestId);
     	
     	entityManager.persist(bookingRecord);
-    	return;
+
+    	return bookingRecord.getBookingId();
+    }
+
+    //20241216新增修改訂位資料之方法
+    @Transactional
+    public BookingRecord updateBookingData(int bookingId,int restId, Date bookingDate
+			, Time bookingTime,int seat,int guestId) {
+    	
+    	BookingRecord bookingRecord = new BookingRecord();
+    	bookingRecord.setBookingId(bookingId);
+    	bookingRecord.setBookingDate(bookingDate);
+    	bookingRecord.setBookingTime(bookingTime);
+    	
+    	Restaurant rest = queryRestByRestId(restId);
+    	bookingRecord.setBookingRest(rest);
+    	bookingRecord.setGuestNum(seat);
+    	
+    	bookingRecord.setGuestId(guestId);
+    	
+    	BookingRecord result = entityManager.merge(bookingRecord);
+
+    	return result;
     }
     
     public Restaurant queryRestByRestId(Integer restId) {

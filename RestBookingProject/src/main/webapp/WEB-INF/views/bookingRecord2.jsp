@@ -50,10 +50,11 @@
             });
         }
         function goToUpdateBookingRecordPage(restName,bookingDate,bookingTime,guestNum){
-            localStorage.setItem('restName', restName);
-            localStorage.setItem('bookingDate', bookingDate);
-            localStorage.setItem('bookingTime', bookingTime);
-            localStorage.setItem('guestNum', guestNum);
+			//移除localStorage的用法
+            //localStorage.setItem('restName', restName);
+            //localStorage.setItem('bookingDate', bookingDate);
+            //localStorage.setItem('bookingTime', bookingTime);
+            //localStorage.setItem('guestNum', guestNum);
 
             window.location.href = "http://localhost:8080/RestBookingProject/form/goToUpdateBookingRecordPage";
         }
