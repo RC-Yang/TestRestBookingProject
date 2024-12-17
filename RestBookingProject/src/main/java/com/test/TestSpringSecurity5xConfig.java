@@ -47,7 +47,7 @@ public class TestSpringSecurity5xConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
 		return http//HttpSecurity物件的功能，就類似於一個清單，用於手動添加安全規定
 				//啟用HSTS
 				.headers(headers -> 
