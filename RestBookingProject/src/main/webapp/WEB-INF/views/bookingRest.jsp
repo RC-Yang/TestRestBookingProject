@@ -42,7 +42,7 @@
             margin-bottom: 16px;
             box-sizing: border-box;
         }
-        #confirm {
+        #submitReserve,#return {
             background-color: #4caf50;
             color: #fff;
             padding: 10px 15px;
@@ -65,7 +65,7 @@
             background-color: lightpink;
         }
     </style>
-	<script>
+	<script nonce="${nonce}">
         $(document).ready(function() {
 
             // 從後端傳回的營業時間資訊
@@ -164,16 +164,24 @@
                 <option value="6">6 人</option>
             </select>
 
-            <button id="confirm" type="button" onclick="bookingSubmit();">提交訂位</button>
+            <button type="button" id="submitReserve">提交訂位</button>
 			&nbsp;
 			<button id="cancel" type="button" onclick="javascript:history.back();">取消</button>
 			&nbsp;
-			<button id="confirm" type="button" onclick="window.location.href = 'http://localhost:8080/RestBookingProject/entry/goTologinSuccessForUser'">返回首頁</button>
+			<button type="button" id="return">返回首頁</button>
 			<input type="hidden" id="restId" name="restId" value="${restId}">
 			<input type="hidden" id="restName" name="restName" value="${restName}">
         
         	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </main>
+    <script nonce="${nonce}">
+	    document.getElementById("submitReserve").addEventListener('click',function(){
+			bookingSubmit();
+		});
+		document.getElementById("return").addEventListener('click',function(){
+			window.location.href = 'http://localhost:8080/RestBookingProject/entry/goTologinSuccessForUser';
+		});
+    </script>
 </body>
 </html>

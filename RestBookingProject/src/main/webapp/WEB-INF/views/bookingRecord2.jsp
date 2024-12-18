@@ -128,9 +128,14 @@
                 </tbody>
             </table>
             <div style="text-align: center;">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href = 'http://localhost:8080/RestBookingProject/entry/goTologinSuccessForUser'">返回</button>
+                <button type="button" class="btn btn-secondary" id="return">返回</button>
             </div>
         </div>
     </div>
+    <script nonce="${nonce}">
+		document.getElementById("return").addEventListener('click',function(){
+			window.location.href = 'http://localhost:8080/RestBookingProject/entry/goTologinSuccessForUser';
+		});
+    </script>
 </body>
 </html>

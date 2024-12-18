@@ -24,7 +24,7 @@ public class NonceFilter extends OncePerRequestFilter
             throws ServletException, IOException {
     	 String nonce = generateNonce();
 
-         response.setHeader("Content-Security-Policy", "script-src 'self' 'unsafe-inline' 'unsafe-eval' "
+         response.setHeader("Content-Security-Policy", "script-src 'self' 'nonce-" + nonce + "' 'unsafe-inline' 'unsafe-eval' "
          		+ "https://code.jquery.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://cdn.datatables.net;");
          //設置'self'，表示可從自身專案引入js檔
          //設置'unsafe-inline' 'unsafe-eval'，表示jsp內部的script沒有nonce的話也可執行，且讓CSP允許eval函數被執行
