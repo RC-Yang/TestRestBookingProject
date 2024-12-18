@@ -23,13 +23,22 @@ public class NonceFilter extends OncePerRequestFilter
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
     	 String nonce = generateNonce();
+    	 String requestURI = request.getRequestURI();
 
-         response.setHeader("Content-Security-Policy", "script-src 'self' 'nonce-" + nonce + "' 'unsafe-inline' 'unsafe-eval' "
-         		+ "https://code.jquery.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://cdn.datatables.net;");
-         //設置'self'，表示可從自身專案引入js檔
-         //設置'unsafe-inline' 'unsafe-eval'，表示jsp內部的script沒有nonce的話也可執行，且讓CSP允許eval函數被執行
-         //且5個URL的資源直接放行不需檢查nonce
-         request.setAttribute("nonce", nonce);
+    	 if (requestURI.contains("/queryBooking")||
+    			 requestURI.contains("/deleteBookingRecord")||
+    			 requestURI.contains("/goToUpdateBookingRecordPage")||
+    			 requestURI.contains("/goToUpdateBookingRecord")) {
+    		 
+    	 }
+    	 else {
+    		 response.setHeader("Content-Security-Policy", "script-src 'self' 'nonce-" + nonce + "' 'unsafe-inline' 'unsafe-eval' "
+    	         		+ "https://code.jquery.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://cdn.datatables.net;");
+    	         //設置'self'，表示可從自身專案引入js檔
+    	         //設置'unsafe-inline' 'unsafe-eval'，表示jsp內部的script沒有nonce的話也可執行，且讓CSP允許eval函數被執行
+    	         //且5個URL的資源直接放行不需檢查nonce
+    	         request.setAttribute("nonce", nonce); 
+    	 }
 
         filterChain.doFilter(request, response);
     }
