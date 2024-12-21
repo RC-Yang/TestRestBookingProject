@@ -136,7 +136,7 @@
         </div>
         <div class="headerNavDiv">
             <nav class="headerNav">
-                <a href="#">查詢訂位</a>
+                <a href="<%=request.getContextPath() %>/booking/queryBookingForRest">查詢訂位</a>
                 <a href="#">修改/取消訂位</a>
                 <a href="<%=request.getContextPath() %>/form/goToUpdateUserInfo">修改餐廳資訊</a>
                 <a href="#">關於我們</a>
@@ -145,7 +145,7 @@
     </header>
     <main>
         <div id="mainDiv" class="carousel slide" data-bs-ride="carousel">
-				  
+			<img src="<%=request.getContextPath() %>/image/restaurant1.jpg" class="d-block w-100 img" alt="...">	  
 		</div>
     </main>
     <footer>

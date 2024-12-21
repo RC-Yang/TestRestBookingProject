@@ -20,4 +20,6 @@ public interface BookingRepository extends JpaRepository<BookingRecord, Integer>
 			+ "AND b.booking_date = :bookingDate AND b.booking_time=:bookingTime", nativeQuery = true)
 	public int findAvalibleSeatByRestId(@Param("restId") Integer restId,@Param("bookingDate") Date bookingDate
 			,@Param("bookingTime") Time bookingTime);
+	
+	public List<BookingRecord> findByBookingRest_Id(Integer account);
 }

@@ -78,8 +78,8 @@
    			var regForm = new FormData(document.getElementById('reg'));
    			
    			 $.ajax({
-   				 url: $('#reg').attr('action'), // 從表單的 action 屬性獲取提交 URL
-   	             type: $('#reg').attr('method'), // 從表單的 method 屬性獲取提交方式 (POST)
+   				 url: "${pageContext.request.contextPath}/entry/reg", // 從表單的 action 屬性獲取提交 URL
+   	             type: "post", // 從表單的 method 屬性獲取提交方式 (POST)
    	             //data: $(this).serialize()
                  //將表单中的input欄位name-value對，轉成字串；然後這個字串再被串在url後方，形成queryString
    	             //而Java 的序列化，是將物件轉成可儲存於資料庫或傳送到其他地方的字串
@@ -303,18 +303,18 @@
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div class="container">
                         <div class="row">
-                            <sp:form modelAttribute="user" id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data">
+                            <form id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data">
                             	<!--20240629新增-->
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                 <div class="d-flex flex-row justify-content-evenly align-items-center">
                                     <div class="form-check">
-                                        <sp:radiobutton class="form-check-input" name="userType" id="userType1" path="userType" value="1"/>
+                                        <input type="radio" class="form-check-input" name="userType" id="userType1" value="1"/>
                                         <label class="form-check-label userType" for="userType1">
                                           一般客戶端
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <sp:radiobutton class="form-check-input" name="userType" id="userType2" path="userType" value="2" checked="checked"/>
+                                        <input type="radio" class="form-check-input" name="userType" id="userType2" value="2" checked="checked"/>
                                         <label class="form-check-label userType" for="userType2">
                                           餐廳端
                                         </label>
@@ -323,7 +323,7 @@
                                 
                                 <div class="mb-3">
                                 <label for="account" class="form-label">請輸入帳號：</label>
-                                <sp:input class="form-control" id="account" name="account" path="account"/>
+                                <input type="text" class="form-control" id="account" name="account"/>
                                     <div class="valid-Account">
                                         Looks good!
                                     </div>
@@ -334,7 +334,7 @@
                                 
                                 <div class="mb-3">
                                 <label for="email" class="form-label">請輸入Email：</label>
-                                <sp:input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" path="email"/>
+                                <input type="text" class="form-control" id="email" name="email" aria-describedby="emailHelp"/>
                                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                                     <div class="valid-Email">
                                         Looks good!
@@ -345,7 +345,7 @@
                                 </div>
                                 <div class="mb-3">
                                 <label for="password" class="form-label">請輸入密碼：</label>
-                                <sp:input type="password" class="form-control" id="password" name="password" path="password"/>
+                                <input type="password" class="form-control" id="password" name="password"/>
                                 <div class="valid-Password">
                                     Looks good!
                                 </div>
@@ -365,7 +365,7 @@
                                 </div>
                                 <div class="mb-3">
 								    <label for="formFile" class="form-label">個人/餐廳圖像：</label>
-								    <sp:input class="form-control" type="file" id="picture" name="picture" path="picture"/>
+								    <input class="form-control" type="file" id="picture" name="picture"/>
 								</div>
                                 <!--20240124新增-->
 								<div class="mb-3 restData">
@@ -435,7 +435,7 @@
                                     <button type="button" class="btn btn-primary" onclick="regSubmit();">提交</button>
                                     <button type="button" class="btn btn-danger" onclick="javascript:history.back();">取消</button>
                                 </div>
-                            </sp:form>
+                            </form>
                         </div>
                     </div>
                 </div>

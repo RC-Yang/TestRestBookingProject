@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.bean.Restaurant;
@@ -86,14 +87,18 @@ public class EntryController {
 		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
 		String password = req.getParameter("password")==null?(String)session.getAttribute("password"):req.getParameter("password");
 		//20240810新增
+		//Authentication物件由AuthenticationProvider提供
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
 
 			Optional<String> image = userDao.queryUserImage(req.getServletContext(),account, Integer.parseInt(userType));
 			session.setAttribute("userImage", image.get());
-			if(userType.equals("1")){
+			//20241221改用Spring Security語法
+			if(authentication.getAuthorities().stream()
+			        .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"))){
 				return "loginSuccessForUser";
-			}else if(userType.equals("2")){
+			}else if(authentication.getAuthorities().stream()
+			        .anyMatch(authority -> authority.getAuthority().equals("ROLE_REST"))){
 				return "loginSuccessForRest";
 			}		
 		}
@@ -111,21 +116,13 @@ public class EntryController {
 		return "reqAndLogin5";
 	}
 	@GetMapping(value="/goToLogIn")
-	public String goToLogIn(@RequestParam(name="action") Integer action,Model model
+	public String goToLogIn(@RequestParam(name="action", defaultValue = "2") Integer action,Model model
 			) {
 		model.addAttribute("action", action);
 		model.addAttribute("user", new User());
 
 		return "reqAndLogin5";
 	}
-	
-//	@PostMapping(value="/reg1")
-//	public String registerToDB(@ModelAttribute("user") User user) {
-//		//讓user物件綁定到前端表單step3
-//		int result = userDao.addUser(user);
-//		System.out.println("result = "+result);
-//		return "loginSuccess";
-//	}
 	
 	@PostMapping(value="/reg")
 	@ResponseBody//Spring MVC的表單雙向綁定，是將表單跟VO綁定；若前端表單值的型別，不能直接對應到VO的屬性型別的話，就不能直接雙向綁定
@@ -151,7 +148,8 @@ public class EntryController {
 		int result = 0;
 		
 		if(userType==1) {
-			result = userDao.addUser(user);
+			userDao.addUser(user);
+			result = userDao.addAUTHORITIES(user);
 		}
 		else if(userType==2) {
 			Restaurant rest = new Restaurant();
@@ -162,7 +160,9 @@ public class EntryController {
 			rest.setOpeningTime(openingTime);
 			rest.setClosingTime(closingTime);
 			
-			result = userDao.addRestUser(user, rest);
+			userDao.addUser(user);
+			userDao.addRestUser(user, rest);
+			result = userDao.addAUTHORITIES(user);
 		}
 		
 		try {

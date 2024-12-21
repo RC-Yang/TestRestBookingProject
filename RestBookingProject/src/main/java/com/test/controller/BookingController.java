@@ -65,6 +65,16 @@ public class BookingController {
 		return "bookingRecord2";
 	}
 	
+	@RequestMapping("/queryBookingForRest")
+	public String queryBookingRecordForRest(Model model,HttpServletRequest req) {
+		javax.servlet.http.HttpSession session = req.getSession();
+		String account = req.getParameter("account")==null?(String)session.getAttribute("account"):req.getParameter("account");
+		List<BookingRecord> bookingRecord = bookingRepository.findByBookingRest_Id(Integer.parseInt(account));
+
+		model.addAttribute("bookingRecord", bookingRecord);
+		return "bookingRecordForRest";
+	}
+	
 	@GetMapping("/goToUpdateBookingRecord")
 	public String goToUpdateBookingRecord(Model model,HttpServletRequest req) {
 		javax.servlet.http.HttpSession session = req.getSession();

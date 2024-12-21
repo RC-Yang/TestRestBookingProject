@@ -28,7 +28,9 @@ public class NonceFilter extends OncePerRequestFilter
     	 if (requestURI.contains("/queryBooking")||
     			 requestURI.contains("/deleteBookingRecord")||
     			 requestURI.contains("/goToUpdateBookingRecordPage")||
-    			 requestURI.contains("/goToUpdateBookingRecord")) {
+    			 requestURI.contains("/goToUpdateBookingRecord")||
+    			 requestURI.contains("/goToReg")||requestURI.contains("/reg")||
+    			 requestURI.contains("/goToLogIn")) {
     		 
     	 }
     	 else {
