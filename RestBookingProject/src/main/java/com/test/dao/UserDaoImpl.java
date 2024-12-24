@@ -35,7 +35,6 @@ public class UserDaoImpl implements UserDao{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int addUser(User user) {
 		String sql1 = "insert into user(email,password,account,user_type,picture)"
 				+ "values(?,?,?,?,?)";
@@ -54,8 +53,7 @@ public class UserDaoImpl implements UserDao{
 	 
 		return result;		
 	}
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+
 	public int addAUTHORITIES(User user) {
 		
 		int result = 0;
@@ -78,7 +76,6 @@ public class UserDaoImpl implements UserDao{
 		return result;		
 	}
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int addRestUser(User user,Restaurant rest) {
 		int result = 0;
 

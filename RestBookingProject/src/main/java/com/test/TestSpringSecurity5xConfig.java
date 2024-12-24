@@ -67,15 +67,10 @@ public class TestSpringSecurity5xConfig {
 				.authorizeRequests(
 						authorizeRequests -> authorizeRequests
 								.antMatchers("/image/**", "/js/**", "/entry/goToLogIn", "/entry/goToReg",
-										"/entry/checkLogin", "/form/queryDistrictForRest","/index.jsp","/entry/reg")
+										"/entry/checkLogin", "/form/queryDistrictForRest","/index.jsp","/entry/reg"
+										,"/indexForAdmin.jsp","/entry/goTologinSuccessForAdmin")
 								.permitAll().anyRequest().authenticated())
 				//用於確認任何請求路徑是否通過「是否為用戶」的檢查，若通過就放行請求路徑，若不通過則重導回去
-				.formLogin(formLogin -> formLogin.loginPage("/entry/goToLogIn").permitAll())
-				//確認使用者為用戶後，透過.formLogin()設定用戶登入頁面
-				//.formLogin()表示使用Spring Security預設表單登入頁面做為網站登入頁
-				//formLogin.loginPage("/index.jsp").permitAll())這行表示將網站登入頁改為/index.jsp
-				//.permitAll()為必添加，因Spring Security不會預設這個客製化頁面是所有人都可存取
-				//.formLogin() 本身並不直接執行驗證
 				.csrf(csrf -> csrf
 						//.ignoringAntMatchers("/entry/goToReg", "/entry/reg", "/entry/checkLogin", "/entry/goToLogIn")
 						.csrfTokenRepository(new HttpSessionCsrfTokenRepository()))

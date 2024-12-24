@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,17 +109,15 @@ public class EntryController {
 		return "redirect:/index.jsp";
 	}
 	@GetMapping(value="/goToReg")
-	public String goToRegister(@RequestParam(name="action") Integer action,Model model
-			) {
-		model.addAttribute("action", action);
+	public String goToRegister(Model model) {
+		model.addAttribute("action", 1);
 		model.addAttribute("user", new User());//讓user物件綁定到前端表單step1
 
 		return "reqAndLogin5";
 	}
 	@GetMapping(value="/goToLogIn")
-	public String goToLogIn(@RequestParam(name="action", defaultValue = "2") Integer action,Model model
-			) {
-		model.addAttribute("action", action);
+	public String goToLogIn(Model model) {
+		model.addAttribute("action", 2);
 		model.addAttribute("user", new User());
 
 		return "reqAndLogin5";
@@ -127,6 +126,7 @@ public class EntryController {
 	@PostMapping(value="/reg")
 	@ResponseBody//Spring MVC的表單雙向綁定，是將表單跟VO綁定；若前端表單值的型別，不能直接對應到VO的屬性型別的話，就不能直接雙向綁定
 	//例如img元素，對應的後端型別是MultipartFile，但VO通常會將相關屬性型別設為Byte array
+	@Transactional
 	public String registerToDB(@RequestParam(name="picture")MultipartFile picture, 
 			@RequestParam(name="account")String account,@RequestParam(name="email")String email,
 			@RequestParam(name="password")String password,
@@ -227,5 +227,32 @@ public class EntryController {
 	@RequestMapping("/goToReqAndLogin")
 	public String goToReqAndLogin() {
 		return "reqAndLogin5";
+	}
+	
+	@PostMapping(value="/goTologinSuccessForAdmin")
+	public String goTologinSuccessForAdmin(HttpServletRequest req) throws NumberFormatException, IOException {
+		
+		String account = req.getParameter("account");
+		String password = req.getParameter("password");
+		String userType = req.getParameter("userType")==null?"3":req.getParameter("userType");
+
+        UsernamePasswordAuthenticationToken authRequest = 
+                new UsernamePasswordAuthenticationToken(account, password);
+
+        Authentication authentication = authenticationProvider.authenticate(authRequest);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		if (authentication != null && authentication.isAuthenticated()
+				&&authentication.getAuthorities().stream()
+		        .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
+			HttpSession session = req.getSession();
+			session.setAttribute("account", account);
+			Optional<String> image = userDao.queryUserImage(req.getServletContext(),account, Integer.parseInt(userType));
+			session.setAttribute("userImage", image.get());
+			return "loginSuccessForAdmin";
+		}
+
+		return "redirect:/index.jsp";
 	}
 }

@@ -82,10 +82,12 @@
         }
         main{
             width:100%;
-        }
-        #mainDiv{
-            width:100%;
             height:60vh;
+        }
+        main .img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
         }
         footer{
             background-color: cyan;
@@ -144,9 +146,7 @@
         </div>
     </header>
     <main>
-        <div id="mainDiv" class="carousel slide" data-bs-ride="carousel">
-			<img src="<%=request.getContextPath() %>/image/restaurant1.jpg" class="d-block w-100 img" alt="...">	  
-		</div>
+		<img src="<%=request.getContextPath() %>/image/restaurant1.jpg" class="d-block w-100 img" alt="...">	  
     </main>
     <footer>
         <div id="fooText">web © 2015 , Update @2023 Maintain by TSuiling ( tsuiling1020@gmail.com )</div>
