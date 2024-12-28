@@ -48,22 +48,41 @@
 		width:80%;
 	}
 	</style>
+	<script nonce="${nonce}">
+	$(document).ready(function(){
+		document.getElementById('submitButton').addEventListener("click",async function(){
+			var testForm=new FormData(document.getElementById('adminForm'));
+			
+			var url = "<%=request.getContextPath() %>/entry/checkloginForAdmin";
+
+			var responseEntity = await fetch(url,{method:'post',body:testForm});
+			//var response = await responseEntity.json();
+			var response = await responseEntity.text();
+			
+			if(response=="登入成功"){
+				window.location.href="<%=request.getContextPath() %>/entry/goTologinSuccessForAdmin";
+			}else{
+				window.location.href="<%=request.getContextPath() %>/indexForAdmin.jsp";
+			}
+		});
+	});
+	</script>
 </head>
 <body>
 	<div id="formDiv">
-		<form action="<%=request.getContextPath() %>/entry/goTologinSuccessForAdmin" id="adminForm" method="post">
+		<form action="" id="adminForm" method="post">
 		  <input type="hidden" name="_csrf" value="${_csrf.token}"/>
 		  
 		  <div class="mb-3 mt-3">
 		    <label for="account" class="form-label">帳號:</label>
-		    <input type="text" class="form-control" id="account" name="account" placeholder="輸入帳號" name="email">
+		    <input type="text" class="form-control" id="account" name="account" placeholder="輸入帳號">
 		  </div>
 		  <div class="mb-3">
 		    <label for="pwd" class="form-label">密碼:</label>
-		    <input type="password" class="form-control" id="password" name="password" placeholder="輸入密碼" name="pswd">
+		    <input type="password" class="form-control" id="password" name="password" placeholder="輸入密碼">
 		  </div>
 
-		  <button type="submit" class="btn btn-primary">提交</button>
+		  <button type="button" class="btn btn-primary" id="submitButton">提交</button>
 		</form>	
 	</div>
 </body>

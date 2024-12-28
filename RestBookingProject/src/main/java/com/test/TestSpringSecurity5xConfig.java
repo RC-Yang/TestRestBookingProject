@@ -68,7 +68,7 @@ public class TestSpringSecurity5xConfig {
 						authorizeRequests -> authorizeRequests
 								.antMatchers("/image/**", "/js/**", "/entry/goToLogIn", "/entry/goToReg",
 										"/entry/checkLogin", "/form/queryDistrictForRest","/index.jsp","/entry/reg"
-										,"/indexForAdmin.jsp","/entry/goTologinSuccessForAdmin")
+										,"/indexForAdmin.jsp","/entry/checkloginForAdmin")
 								.permitAll().anyRequest().authenticated())
 				//用於確認任何請求路徑是否通過「是否為用戶」的檢查，若通過就放行請求路徑，若不通過則重導回去
 				.csrf(csrf -> csrf

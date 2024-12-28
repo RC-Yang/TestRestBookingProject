@@ -228,9 +228,13 @@ public class EntryController {
 	public String goToReqAndLogin() {
 		return "reqAndLogin5";
 	}
+	@GetMapping(value="/goTologinSuccessForAdmin")
+	public String goTologinSuccessForAdmin() {
+		return "loginSuccessForAdmin";
+	}
 	
-	@PostMapping(value="/goTologinSuccessForAdmin")
-	public String goTologinSuccessForAdmin(HttpServletRequest req) throws NumberFormatException, IOException {
+	@PostMapping(value="/checkloginForAdmin")
+	public ResponseEntity<String> checkloginForAdmin(HttpServletRequest req) throws NumberFormatException, IOException {
 		
 		String account = req.getParameter("account");
 		String password = req.getParameter("password");
@@ -250,9 +254,10 @@ public class EntryController {
 			session.setAttribute("account", account);
 			Optional<String> image = userDao.queryUserImage(req.getServletContext(),account, Integer.parseInt(userType));
 			session.setAttribute("userImage", image.get());
-			return "loginSuccessForAdmin";
+			
+			return ResponseEntity.ok().body("登入成功");		
 		}
 
-		return "redirect:/index.jsp";
+		return ResponseEntity.ok().body("登入失敗");
 	}
 }
