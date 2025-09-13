@@ -26,11 +26,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
+//在Spring Boot專案，啟用Spring Security，不需以上設定
 public class TestSpringSecurity5xConfig {
 	@Autowired
 	private DataSource dataSource;
-	//20241216用於強制重導至https://localhost:8443/
+	//20241216設置8080請求通道，其將8080請求交給Spring filter chain
 	@Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
         return factory -> factory.addAdditionalTomcatConnectors(createHttpConnector());
@@ -39,9 +40,9 @@ public class TestSpringSecurity5xConfig {
     private Connector createHttpConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
-        connector.setPort(8080); // HTTP埠
+        connector.setPort(8080);
         connector.setSecure(false);
-        connector.setRedirectPort(8443); // 重定向到HTTPS埠
+
         return connector;
     }
 
@@ -58,11 +59,11 @@ public class TestSpringSecurity5xConfig {
 	            )
 				// 強制 HTTPS
 				.requiresChannel(channel -> {
-				    channel.anyRequest().requiresSecure();//專案內任何路徑url，通通都會被強制改成https開頭
+				    channel.anyRequest().requiresSecure();//請求必須走安全通道，也就是必須用HTTPS；連自己回傳的訊息，也認為必須用安全通道HTTPS
 				        }
 				).portMapper((portMapper) ->
 	                portMapper
-	                .http(8080).mapsTo(8443)
+	                .http(8080).mapsTo(8443)//將原始url，8080改成8443，以便https訊息回傳給瀏覽器時，其能知道要重導的新url
 				)
 				.authorizeRequests(
 						authorizeRequests -> authorizeRequests
@@ -90,11 +91,12 @@ public class TestSpringSecurity5xConfig {
     public UserDetailsService userDetailsService() {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
         jdbcUserDetailsManager.setDataSource(dataSource);
-        // 设置用户查询
+        // 設置用戶查詢
         jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT account, password, true as enabled FROM web.user WHERE account = ?");
         
-        // 设置权限查询
-        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT account, authority FROM web.authorities WHERE account = ?");
+        // 設置權限查詢
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT u.account, a.authority FROM web.user u join web.authorities a "
+        		+ "on u.user_id=a.id WHERE u.account = ?");
 
         return jdbcUserDetailsManager;
     }
