@@ -10,6 +10,19 @@ local.properties
 .loadpath
 .recommenders
 
+# Eclipse 專案設定
+.settings/
+.project
+.classpath
+
+# Maven 產生的目錄
+/target/
+
+# 其他 IDE 設定檔（可選）
+*.iml
+.idea/
+
+
 # External tool builders
 .externalToolBuilders/
 
