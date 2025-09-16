@@ -106,9 +106,9 @@ public class EntryController {
 		
 		//在使用 Spring 的 redirect 方法時，路徑是相對於應用的根目錄的
 		//根目錄是webapp這個資料夾
-		return "redirect:/index.jsp";
+		return "redirect:" + req.getContextPath() + "/index.jsp";
 	}
-	@GetMapping(value="/goToReg")
+	@RequestMapping(value="/goToReg")
 	public String goToRegister(Model model) {
 		model.addAttribute("action", 1);
 		model.addAttribute("user", new User());//讓user物件綁定到前端表單step1
@@ -186,14 +186,7 @@ public class EntryController {
 		}
 		return "RegisterFail";
 	}
-	
-	@RequestMapping("/logout")
-	public String logout(HttpServletRequest req) {
-		HttpSession session = req.getSession();
-		session.invalidate();
-		
-		return "redirect:/index.jsp";
-	}
+
 	@RequestMapping("/sendUpdatePasswordMail")
 	public String sendUpdatePasswordMail(HttpServletRequest req,Model model) {
 		String email = req.getParameter("email");

@@ -188,7 +188,12 @@ public class UserDaoImpl implements UserDao{
 			
 			return Optional.ofNullable(picture);
 		} catch (EmptyResultDataAccessException e) {
-			return Optional.empty();
+			//找不到使用者圖片，就以預設圖片為使用者圖片
+			String imagePath = context.getRealPath("/image/photoSample.jpg");
+			byte[] imageData = Files.readAllBytes(Paths.get(imagePath));
+			String image = null;		
+			image = DaoUtil.getImageAsBase64(imageData);
+			return Optional.ofNullable(image);
 		} 
 	}
 }

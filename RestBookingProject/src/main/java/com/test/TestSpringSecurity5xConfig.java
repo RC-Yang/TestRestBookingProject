@@ -21,6 +21,8 @@ import org.springframework.security.web.PortMapper;
 import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -51,19 +53,18 @@ public class TestSpringSecurity5xConfig {
 
 		return http//HttpSecurity物件的功能，就類似於一個清單，用於手動添加安全規定
 				//啟用HSTS
-				.headers(headers -> 
-	                headers
-	                    .httpStrictTransportSecurity()
-	                    .includeSubDomains(true)
-	                    .maxAgeInSeconds(31536000)
-	            )
-				// 強制 HTTPS
+//				.headers(headers -> 
+//	                headers
+//	                    .httpStrictTransportSecurity()
+//	                    .includeSubDomains(true)
+//	                    .maxAgeInSeconds(31536000)
+//	            )
 				.requiresChannel(channel -> {
-				    channel.anyRequest().requiresSecure();//請求必須走安全通道，也就是必須用HTTPS；連自己回傳的訊息，也認為必須用安全通道HTTPS
+				    channel.anyRequest().requiresSecure();
 				        }
 				).portMapper((portMapper) ->
 	                portMapper
-	                .http(8080).mapsTo(8443)//將原始url，8080改成8443，以便https訊息回傳給瀏覽器時，其能知道要重導的新url
+	                .http(8080).mapsTo(8443)
 				)
 				.authorizeRequests(
 						authorizeRequests -> authorizeRequests
@@ -73,9 +74,16 @@ public class TestSpringSecurity5xConfig {
 								.permitAll().anyRequest().authenticated())
 				//用於確認任何請求路徑是否通過「是否為用戶」的檢查，若通過就放行請求路徑，若不通過則重導回去
 				.csrf(csrf -> csrf
-						//.ignoringAntMatchers("/entry/goToReg", "/entry/reg", "/entry/checkLogin", "/entry/goToLogIn")
 						.csrfTokenRepository(new HttpSessionCsrfTokenRepository()))
 				//使用者登入後，Spring Security給這位使用者csrf token
+
+				.logout(logout -> logout
+					    .logoutRequestMatcher(new OrRequestMatcher(
+					            new AntPathRequestMatcher("/session/logout", "POST"),
+					            new AntPathRequestMatcher("/entry/logout",   "POST")
+					        )).logoutSuccessUrl("/index.jsp")
+					    .invalidateHttpSession(true)
+					    .deleteCookies("JSESSIONID"))
 				.build();//這是Spring Security拿HttpSecurity物件(這只是個清單)，再另外打包成的具有完整資安功能的物件
 	}
 

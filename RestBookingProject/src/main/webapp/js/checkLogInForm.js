@@ -27,7 +27,7 @@ function checkLogInFormWithAjax(){
 					//20240625修改；需呈顯於下一個jsp頁面但不須傳送到後端的值，存於localStorage
 					localStorage.setItem("loginSuccessMessage",response.message);
 					localStorage.setItem("loginSuccess",true);
-					window.location.href = 'http://localhost:8080/RestBookingProject/entry/login';
+					window.location.href = 'https://localhost:8443/RestBookingProject/entry/login';
 				}
 				else{
 					$('#logInFailModal').addClass('fade');
