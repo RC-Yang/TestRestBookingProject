@@ -30,11 +30,13 @@
 		backdrop: 'static',
 		keyboard: false
 	});
+	
+	var logoutTimer;
 
 	function remindSessionTimeout(){
 		setTimeout(()=>{remindSessionTimeoutModal.show();
 						//若用windows.location.href設定url，並將其包成http get請求傳到後端->不行，因Spring Security預設的登出行為，必須用post+CSRF
-						setTimeout(()=>{
+						logoutTimer = setTimeout(()=>{
 							const form = document.querySelector("#logoutForm");							
 							form.submit();							
 							
@@ -43,6 +45,9 @@
 	}
 	
 	document.getElementById("continue").addEventListener("click",function(){
+
+		clearTimeout(logoutTimer);
+
 		fetch("<%= request.getContextPath() %>/session/keepAlive")
 		.then((res)=>res.json())
 		.then((map)=>{
@@ -54,6 +59,8 @@
 	});
 	
 	document.getElementById("noContinue").addEventListener("click",function(){
+
+		clearTimeout(logoutTimer);
 
 		const token  = document.querySelector('meta[name="_csrf"]').content;
 		const header = document.querySelector('meta[name="_csrf_header"]').content;

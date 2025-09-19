@@ -1,40 +1,18 @@
 package com.test;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-
-import java.sql.Blob;
-import java.util.*;
-
-import javax.sql.DataSource;
 
 import org.apache.catalina.connector.Connector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.PortMapper;
-import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
-import com.test.bean.TestUserDetails;
-import com.test.bean.User;
-import com.test.service.TestUserDetailsService;
-import com.test.util.DaoUtil;
-
-import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
@@ -44,7 +22,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 public class TestSpringSecurity5xConfig {
 //	@Autowired
 //	private DataSource dataSource;
-
 	
 	//20241216設置8080請求通道，其將8080請求交給Spring filter chain
 	@Bean
@@ -65,9 +42,9 @@ public class TestSpringSecurity5xConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
-			//customProvider，會在securityFilterChain被呼叫時，被注入
             AuthenticationProvider customProvider) throws Exception {
-
+		//這樣也是方法參數注入
+		
 		return http//HttpSecurity物件的功能，就類似於一個清單，用於手動添加安全規定
 				//啟用HSTS
 //				.headers(headers -> 
@@ -106,7 +83,7 @@ public class TestSpringSecurity5xConfig {
 				.logout(logout -> logout
 					    .logoutRequestMatcher(new OrRequestMatcher(
 					            new AntPathRequestMatcher("/session/logout", "POST"),
-					            new AntPathRequestMatcher("/entry/logout",   "GET")
+					            new AntPathRequestMatcher("/entry/logout", "GET")
 					        ))
 					    .logoutSuccessUrl("/index.jsp")
 					    .invalidateHttpSession(true)
@@ -114,7 +91,9 @@ public class TestSpringSecurity5xConfig {
 				.build();//這是Spring Security拿HttpSecurity物件(這只是個清單)，再另外打包成的具有完整資安功能的物件
 	}
 
-	@Bean//這個bean用於根據用戶清單，檢查嘗試登入者是否為用戶
+	@Bean//這個bean讓Spring Security能根據用戶清單，檢查嘗試登入者是否為用戶
+	//有了該bean，外加透過Spring Security驗證用戶登入成功，就可以在Spring Security tag使用principal
+	//用方法參數注入法，來注入UserDetailsService
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         //authProvider.setUserDetailsService(new TestUserDetailsService());
