@@ -16,5 +16,5 @@ public interface UserDao {
 	public List<User> queryAllUser();
 	public Optional<User> queryUserByAccount(String account,Integer userType,String password);
 	public Optional<User> queryUserByAccount(String account,String password);
-	public Optional<String> queryUserImage(ServletContext context,String account,Integer userType) throws IOException;
+	public Optional<byte[]> queryUserImage(String account) throws IOException;
 }

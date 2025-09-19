@@ -131,7 +131,7 @@ public class UserDaoImpl implements UserDao{
 		String sql = "SELECT account,user_type,password FROM web.User where account=? and user_type=? and password=?";
 		
 		try {
-			User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class),//BeanPropertyRowMapper是Spring提供的一个实用类，用于将查询结果的行映射到Java对象的属性 
+			User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class),
 					account,userType,password);
 			return Optional.ofNullable(user);
 		} catch (EmptyResultDataAccessException e) {
@@ -151,13 +151,14 @@ public class UserDaoImpl implements UserDao{
 		} 
 	}
 	
-	public Optional<String> queryUserImage(ServletContext context,String account,Integer userType) throws IOException {
-		String sql = "SELECT picture FROM web.User where account=? and user_type=?";
+	public Optional<byte[]> queryUserImage(String account) throws IOException {
+		String sql = "SELECT picture FROM web.User where account=? ";
+		byte[] picture = null;
 		
-		RowMapper<String> mapper = new RowMapper<>() {
+		RowMapper<byte[]> mapper = new RowMapper<>() {
 
 			@Override
-			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+			public byte[] mapRow(ResultSet rs, int rowNum) throws SQLException {
 				//取出user資料
 				Blob blob = rs.getBlob("picture");
 				if(blob==null) {
@@ -166,34 +167,17 @@ public class UserDaoImpl implements UserDao{
 				//將資料轉型為byte array
 				byte[] byteArray = null;				
 				byteArray = DaoUtil.blobToByteArr(blob);
-
-				//將資料轉型為base64字串
-				String image = null;		
-				image = DaoUtil.getImageAsBase64(byteArray);
-				return image;
+				return byteArray;
 			}
 		};
 
 		try {
-			String picture = jdbcTemplate.queryForObject(sql, mapper, 
-					account,userType);
-			if(picture==null) {
-				//找不到使用者圖片，就以預設圖片為使用者圖片
-				String imagePath = context.getRealPath("/image/photoSample.jpg");
-				byte[] imageData = Files.readAllBytes(Paths.get(imagePath));
-				String image = null;		
-				image = DaoUtil.getImageAsBase64(imageData);
-				return Optional.ofNullable(image);
-			}
+			picture = jdbcTemplate.queryForObject(sql, mapper, 
+					account);
 			
 			return Optional.ofNullable(picture);
 		} catch (EmptyResultDataAccessException e) {
-			//找不到使用者圖片，就以預設圖片為使用者圖片
-			String imagePath = context.getRealPath("/image/photoSample.jpg");
-			byte[] imageData = Files.readAllBytes(Paths.get(imagePath));
-			String image = null;		
-			image = DaoUtil.getImageAsBase64(imageData);
-			return Optional.ofNullable(image);
-		} 
+			return Optional.ofNullable(picture);
+		}
 	}
 }

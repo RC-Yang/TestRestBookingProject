@@ -155,8 +155,8 @@
         <div class="headerImgDiv">
             <img src="<%=request.getContextPath() %>/image/photo1.png" class="headerimg">
 			<div>
-				你好，${account}~~~
-        		<img src="data:image/jpeg;base64,${userImage}" alt="Image" class="headerUserImg">
+				你好，<sec:authentication property="principal.account"/>~~~
+        		<img src="<sec:authentication property='principal.imageUrl'/>" alt="Image" class="headerUserImg">
         		<a href="<%=request.getContextPath() %>/entry/logout">登出</a>
         	</div>
         </div>

@@ -147,7 +147,7 @@
     	});
     	//20240826修改：CSP不允許直接透過onclick呼叫函數，故改為以下寫法
     	document.getElementById("submitLogin").addEventListener('click', function () {
-    		checkLogInFormWithAjax();
+    		document.getElementById("login").submit();
 		});
     	document.getElementById("cancelSubmitLogin").addEventListener('click', function () {
     		history.back();

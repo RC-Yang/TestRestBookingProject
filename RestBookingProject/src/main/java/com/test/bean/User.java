@@ -32,6 +32,7 @@ public class User {
 	private MultipartFile picture;//使用者頭貼
 	@Transient
 	private String image;//for呈顯於jsp header
+
 	//一使用者關聯到一餐廳
 	@OneToOne
 	//使用者透過rest_id這個外鍵來關聯到餐廳
