@@ -9,6 +9,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+/RestBookingProject/src/main/resources/secrets/
+
 
 # Eclipse 專案設定
 .settings/
