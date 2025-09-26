@@ -11,10 +11,9 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-<script src="<%=request.getContextPath() %>/js/goToLoginPage.js"></script>
 <script src="<%=request.getContextPath() %>/js/checkPasswordResetForm.js"></script>
 <!--20240330新增-->
-<script>
+<script nonce="${nonce}">
 	function showConfirmModal(){
 		$('#updatePasswordConfirm').modal('show');
 
@@ -49,6 +48,15 @@
 		$("#password1,#checkPassword1").on('input',function(){
 			checkPasswordResetFormWithAjax();
 		});
+		
+		$("#submitButton").click(showConfirmModal);
+		$("#cancelButton").click(function(){
+			window.location.href='https://localhost:8443/RestBookingProject/form/goToReqAndLogin';
+		});
+
+		$("#updatePasswordSuccessButton").click(function(){
+			location.href="https://localhost:8443/RestBookingProject/index.jsp";
+		});		
 	});
 </script>
 </head>
@@ -64,7 +72,7 @@
 	        <p>密碼修改成功，請重新登入。</p>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-primary" onclick="goToLoginPage();">確認</button>
+	        <button type="button" class="btn btn-primary" id="updatePasswordSuccessButton">確認</button>
 	      </div>
 	    </div>
 	  </div>
@@ -94,23 +102,19 @@
 				<label for="account" class="form-label">請輸入帳號：</label>
                 <input type="text" class="form-control" id="account" name="account"/>
 			</div>
-			<div class="mb-3">
-				<label for="account" class="form-label">請輸入密碼：</label>
-                <input type="text" class="form-control" id="password" name="password"/>
-				<p id="accAndPassResult"></p>
-			</div>
+
 			<div class="mb-3">
 				<label for="password" class="form-label">請輸入新密碼：</label>
 				<input type="password" class="form-control" id="password1" name="password1">
 			</div>
 			<div class="mb-3">
-				<label for="password1" class="form-label">請再次輸入新密碼：</label>
+				<label for="checkPassword1" class="form-label">請再次輸入新密碼：</label>
 				<input type="password" class="form-control" id="checkPassword1" name="checkPassword1">
 				<p id="newPassResult"></p>
 			</div>
 			
-			<button type="button" class="btn btn-primary" onclick="showConfirmModal();">提交</button>
-			<button type="button" class="btn btn-danger" onclick="window.location.href='http://localhost:8080/RestBookingProject/form/goToReqAndLogin';">取消</button>
+			<button type="button" class="btn btn-primary" id="submitButton">提交</button>
+			<button type="button" class="btn btn-danger" id="cancelButton">取消</button>
 		</form>
 	  </div>
 	</div>

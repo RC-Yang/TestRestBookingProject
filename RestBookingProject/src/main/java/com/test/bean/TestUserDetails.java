@@ -20,6 +20,7 @@ public class TestUserDetails implements UserDetails {
 		this.userType = userType;
 	}
 
+	//用於Spring Security tag，principal取出account的值
 	public String getAccount() {
 		return account;
 	}
@@ -28,6 +29,7 @@ public class TestUserDetails implements UserDetails {
 		return "/RestBookingProject/entry/users/" + account + "/getUserImage";
 	}
 
+	//對應DB的authority欄位名或自己組出authority值
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		String role = null;
 
@@ -44,12 +46,14 @@ public class TestUserDetails implements UserDetails {
 	}
 
 	@Override
+	//對應DB的密碼欄位名
 	public String getPassword() {
 		// TODO Auto-generated method stub
 		return password;
 	}
 
 	@Override
+	//對應DB的帳號欄位名
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return account;

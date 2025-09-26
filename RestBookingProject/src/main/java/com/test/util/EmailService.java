@@ -13,9 +13,10 @@ public class EmailService {
 
     public boolean sendMail(String email) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("test@rcyang.bid");
         message.setTo(email);
         message.setSubject("找回密碼");
-        message.setText("http://localhost:8080/RestBookingProject/entry/goToResetPassword");
+        message.setText("https://localhost:8443/RestBookingProject/entry/goToResetPassword");
 
         try {
             javaMailSender.send(message);

@@ -19,7 +19,7 @@
 	<script src="<%=request.getContextPath() %>/js/checkEmailForm.js" nonce="${nonce}"></script>
 </head>
 <script nonce="${nonce}">
-    $(document).ready(function(){
+    $(document).ready(function(){    	
         //20240629新增
         window.token = $("meta[name='_csrf']").attr("content");
         window.header = $("meta[name='_csrf_header']").attr("content");
@@ -28,8 +28,6 @@
         // 先清空預設被激活的form與li的狀態
         $("#home-tab").removeClass('active');
         $("#home").removeClass('active');
-
-        $('*').removeClass('fade');
         
         $(".valid-Account").css("display","none");
         $(".valid-Email").css("display","none");
@@ -103,16 +101,40 @@
     	 window.location.href = '<%=request.getContextPath()%>/entry/login';
     	 $('.modal').modal('hide');
     }
+    
     function submitEmailForm(){
     	if(checkEmailForm()==true){
 
-            $('#sendMailConfirm').modal('show');
+    		var sendMailConfirmModal = document.getElementById("sendMailConfirm");
+    		sendMailConfirmModal = new bootstrap.Modal(sendMailConfirmModal);
+    		
+    		sendMailConfirmModal.show();
 
-            $('#sendMailConfirm button.btn-primary').click(function () {
+            document.querySelector('#sendMailConfirm button.btn-primary').addEventListener("click",function(){
                 
-                $('#sendMailConfirm').modal('hide');
-                $('#forgetPassword').submit();
-                $('#sendMailFinish').modal('show');
+                //$('#sendMailConfirm').modal('hide');
+                sendMailConfirmModal.hide();
+                
+                var forgetPasswordForm = document.getElementById("forgetPassword");
+                forgetPasswordFormData = new FormData(forgetPasswordForm);
+                
+                fetch("<%=request.getContextPath() %>/entry/sendUpdatePasswordMail",
+                		{method:"post",body: forgetPasswordFormData})
+                		.then(res=>res.text())
+                		.then((text)=>{
+							if(text=="密碼重設信傳送成功"){
+								var sendMailFinish = document.getElementById("sendMailFinish");
+								sendMailFinishModal = new bootstrap.Modal(sendMailFinish);
+								
+								//$('#sendMailFinish').modal('show');
+								sendMailFinishModal.show();
+								
+								document.querySelector('#sendMailFinish button.btn-primary').addEventListener("click",function(){
+									//sendMailFinishModal.hide();
+									setTimeout(()=>location.href="https://localhost:8443/RestBookingProject/index.jsp",300);
+								});
+							}
+                		});
             }); 		
     	}
     }
@@ -158,8 +180,6 @@
 	 .restData{
 		 display:none;
 	 }
- </style>
-<style>
     *{
         margin: 0;
         padding: 0;
@@ -217,6 +237,8 @@
     	padding:10px 40px;
         background-image: linear-gradient(180deg,#799bc2,#fff);
     }
+
+    
 </style>
 <body>
     <!-- 確認要寄出修改密碼信件的modal -->
@@ -246,7 +268,7 @@
 			<p>已寄出修改密碼信件。</p>
 			</div>
 			<div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-dismiss="modal">確認</button>
+			<button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
 			</div>
 		</div>
 		</div>
@@ -300,7 +322,7 @@
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div class="container">
                         <div class="row">
                             <form id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data">
@@ -439,7 +461,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="tab-pane show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="container">
                         <div class="row">
                             <form id="login" method="post" action="<%=request.getContextPath() %>/entry/checkLogin">
@@ -476,14 +498,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="tab-pane show" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                     <div class="container">
                         <div class="row">
-                            <form id="forgetPassword" method="post" action="<%=request.getContextPath() %>/entry/sendUpdatePasswordMail">
+                            <form id="forgetPassword">
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                 <div class="mb-5">
 	                                <label for="inputEmail3" class="form-label">請輸入要傳送重設密碼信件的郵件位置：</label>
 	                                <input type="email" class="form-control" id="email" name="email">
+	                                <div class="invalid-feedback">郵件位置格式錯誤</div>
                                 </div>
                                 
                                 <div class="text-center">
@@ -564,6 +587,6 @@
 			//$('#restAddr').text(selectedCountry+selectedDistrict);
 			$('#restAddr').val(selectedCountry+selectedDistrict);
 		}
-		
+
 </script>
 </html>

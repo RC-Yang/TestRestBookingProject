@@ -158,14 +158,12 @@ public class EntryController {
 	}
 
 	@RequestMapping("/sendUpdatePasswordMail")
-	public String sendUpdatePasswordMail(HttpServletRequest req,Model model) {
+	@ResponseBody
+	public String sendUpdatePasswordMail(HttpServletRequest req) {
 		String email = req.getParameter("email");
-		model.addAttribute("action", 3);
-		model.addAttribute("user", new User());
-		//ControllerUtil.sendMail(email);
-		//20240627修改
+
 		emailService.sendMail(email);
-		return "reqAndLogin5";
+		return "密碼重設信傳送成功";
 	}
 	@RequestMapping("/goToResetPassword")
 	public String goToResetPassword() {
@@ -174,7 +172,7 @@ public class EntryController {
 	@RequestMapping("/updatePassword")
 	@ResponseBody
 	public String updatePassword(HttpServletRequest req) {
-		String newPassword = req.getParameter("password");	
+		String newPassword = req.getParameter("password");
 		return "update password success";
 	}
 
