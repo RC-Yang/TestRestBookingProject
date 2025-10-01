@@ -29,14 +29,9 @@
         $("#home-tab").removeClass('active');
         $("#home").removeClass('active');
         
-        $(".valid-Account").css("display","none");
-        $(".valid-Email").css("display","none");
-		$(".valid-Password").css("display","none");
-		$(".valid-CheckedPassword").css("display","none");
-		$(".invalid-Account").css("display","none");
-		$(".invalid-Email").css("display","none");
-		$(".invalid-Password").css("display","none");
-		$(".invalid-CheckedPassword").css("display","none");
+        $(".valid").css("display","none");
+        $(".valid").css("display","none");
+
 		//確保所有modal都被隱藏
 		$(".modal").modal('hide');
         //將提交鈕被按下後的預設行為擋下來
@@ -66,115 +61,156 @@
             $(".nav-link").removeClass("active");
             $(this).addClass("active");
         });
-    });
- 
-    function regSubmit(){
-    	if(checkRegForm()){
-    		//$('#reg').submit();//這是無回呼函數版本的submit方法
-    		
-   			//將表單所有使用者輸入資料(包含多媒體資料如圖片)，包裝成物件
-   			var regForm = new FormData(document.getElementById('reg'));
-   			
-   			 $.ajax({
-   				 url: "${pageContext.request.contextPath}/entry/reg", // 從表單的 action 屬性獲取提交 URL
-   	             type: "post", // 從表單的 method 屬性獲取提交方式 (POST)
-   	             //data: $(this).serialize()
-                 //將表单中的input欄位name-value對，轉成字串；然後這個字串再被串在url後方，形成queryString
-   	             //而Java 的序列化，是將物件轉成可儲存於資料庫或傳送到其他地方的字串
+        
+      //新增動態檢查email格式
+    	//var emailRegex=/^[a-zA-Z0-9][\w\.-]*@[\dA-Za-z][\dA-Za-z_\-]*[\dA-Za-z]\.[\dA-Za-z]{2,}$/;
+    	var emailDiv = document.getElementsByClassName("emailDiv");
+    	
+    	$("#reg #email").keyup(function(){
 
-   	             data: regForm,
-   	             processData: false,//防止jQuery對表單資料進行預處理
-   	             contentType: false,//防止jQuery自動判斷表單型別，表單型別交給瀏覽器判斷
-   	             success: function(response) {
-   	            	 $('#regSuccess.modal').addClass('fade');
-   	            	 $('#regSuccess.modal').modal('show');
-   	            	 
-   	             },
-   	             error: function(xhr, status, error) {
-   	                 
-   	             }
-   			 });
-    	}
-    }
-    
-    function goToHomePage(){
-    	 window.location.href = '<%=request.getContextPath()%>/entry/login';
-    	 $('.modal').modal('hide');
-    }
-    
-    function submitEmailForm(){
-    	if(checkEmailForm()==true){
+    		emailDiv[0].classList.remove('was-validated');
 
-    		var sendMailConfirmModal = document.getElementById("sendMailConfirm");
-    		sendMailConfirmModal = new bootstrap.Modal(sendMailConfirmModal);
-    		
-    		sendMailConfirmModal.show();
-
-            document.querySelector('#sendMailConfirm button.btn-primary').addEventListener("click",function(){
-                
-                //$('#sendMailConfirm').modal('hide');
-                sendMailConfirmModal.hide();
-                
-                var forgetPasswordForm = document.getElementById("forgetPassword");
-                forgetPasswordFormData = new FormData(forgetPasswordForm);
-                
-                fetch("<%=request.getContextPath() %>/entry/sendUpdatePasswordMail",
-                		{method:"post",body: forgetPasswordFormData})
-                		.then(res=>res.text())
-                		.then((text)=>{
-							if(text=="密碼重設信傳送成功"){
-								var sendMailFinish = document.getElementById("sendMailFinish");
-								sendMailFinishModal = new bootstrap.Modal(sendMailFinish);
-								
-								//$('#sendMailFinish').modal('show');
-								sendMailFinishModal.show();
-								
-								document.querySelector('#sendMailFinish button.btn-primary').addEventListener("click",function(){
-									//sendMailFinishModal.hide();
-									setTimeout(()=>location.href="https://localhost:8443/RestBookingProject/index.jsp",300);
-								});
-							}
-                		});
-            }); 		
-    	}
-    }
-</script>
-<script nonce="${nonce}">
-    document.addEventListener('DOMContentLoaded', function () {
-		const userRadio = document.getElementById('userType1');
-		const restRadio = document.getElementById('userType2');
-
-		userRadio.addEventListener('click', function () {
-			// 隱藏額外的表單元素
-			$(".restData").css("display", "none");
-		});
-		restRadio.addEventListener('click', function () {
-			// 顯示額外的表單元素
-			$(".restData").css("display", "block");
-		});
-		//20240807新增動態檢查註冊email格式
-		var emailRegex=/^[a-zA-Z0-9][\w\.-]*@[\dA-Za-z][\dA-Za-z_\-]*[\dA-Za-z]\.[\dA-Za-z]{2,}/;
-    	$("#email").keyup(function(){
-    		var regexResult = emailRegex.test($("#reg #email").val());
-			if(regexResult){
-				$(".invalid-Email").css("display","block");
-				$(".invalid-Email").text("email格式正確！");
-				$(".invalid-Email").css("color","green");
-				return;
-			}
-    	$(".invalid-Email").css("display","block");
-    	$(".invalid-Email").text("email格式錯誤！");
-		$(".invalid-Email").css("color","red");
-		$(".invalid-Email").css("border-color","red");
+    		emailDiv[0].classList.add("was-validated");
     	});
-    	//20240826修改：CSP不允許直接透過onclick呼叫函數，故改為以下寫法
-    	document.getElementById("submitLogin").addEventListener('click', function () {
-    		document.getElementById("login").submit();
-		});
-    	document.getElementById("cancelSubmitLogin").addEventListener('click', function () {
-    		history.back();
-		});
+    	
+
+    	$("#forgetPassword #email").keyup(function(){
+
+    		emailDiv[1].classList.remove('was-validated');
+
+    		emailDiv[1].classList.add("was-validated");
+    	});
+        
+    	var password = document.getElementById("password");
+        var checkPassword = document.getElementById("checkedPassword");
+        var pwdDiv = document.getElementsByClassName("pwdDiv");
+    	
+        function checkPwdMatch(){
+
+        	pwdDiv[0].classList.remove('was-validated');
+            
+            var ifMatch = password.value!=null&&password.value==checkPassword.value;
+        	
+        	if(checkPassword.value==""&&password.value==""){
+        		checkPassword.setCustomValidity("");
+        	}else if(!ifMatch){
+        		checkPassword.setCustomValidity(" ");
+        	}else{
+        		checkPassword.setCustomValidity("");
+        	}
+        	
+        	pwdDiv[0].classList.add("was-validated");
+        }
+        
+        password.addEventListener("input",function(e){
+        	checkPwdMatch();
+        });
+
+        checkPassword.addEventListener("input",function(e){
+        	checkPwdMatch();
+        });
+     
+        document.getElementById('regSubmitButton').addEventListener('click',function(e){
+
+        	checkPwdMatch();
+        	
+        	var regForm = document.getElementById('reg');
+        	if(regForm.checkValidity()){
+        		
+       			//將表單所有使用者輸入資料(包含多媒體資料如圖片)，包裝成物件
+       			var regFormData = new FormData(regForm);
+       			
+       			 $.ajax({
+       				 url: "${pageContext.request.contextPath}/entry/reg",
+       	             type: "post",
+       	             //data: $(this).serialize()
+                     //將表单中的input欄位name-value對，轉成字串；然後這個字串再被串在url後方，形成queryString
+
+       	             data: regFormData,
+       	             processData: false,
+       	             contentType: false,
+       	             success: function(response) {
+       	            	 $('#regSuccess.modal').addClass('fade');
+       	            	 $('#regSuccess.modal').modal('show');
+       	            	 
+       	             },
+       	             error: function(xhr, status, error) {
+       	                 
+       	             }
+       			 });
+        	}else{
+        		e.preventDefault();
+                e.stopPropagation();
+                
+                regForm.classList.add("was-validated");
+        	}
+        });
+        
+        function goToHomePage(){
+        	 window.location.href = '<%=request.getContextPath()%>/entry/login';
+        	 $('.modal').modal('hide');
+        }
+        
+        function submitEmailForm(){
+        	if(checkEmailForm()==true){
+
+        		var sendMailConfirmModal = document.getElementById("sendMailConfirm");
+        		sendMailConfirmModal = new bootstrap.Modal(sendMailConfirmModal);
+        		
+        		sendMailConfirmModal.show();
+
+                document.querySelector('#sendMailConfirm button.btn-primary').addEventListener("click",function(){
+                    
+                    //$('#sendMailConfirm').modal('hide');
+                    sendMailConfirmModal.hide();
+                    
+                    var forgetPasswordForm = document.getElementById("forgetPassword");
+                    forgetPasswordFormData = new FormData(forgetPasswordForm);
+                    
+                    fetch("<%=request.getContextPath() %>/entry/sendUpdatePasswordMail",
+                    		{method:"post",body: forgetPasswordFormData})
+                    		.then(res=>res.text())
+                    		.then((text)=>{
+    							if(text=="密碼重設信傳送成功"){
+    								var sendMailFinish = document.getElementById("sendMailFinish");
+    								sendMailFinishModal = new bootstrap.Modal(sendMailFinish);
+    								
+    								//$('#sendMailFinish').modal('show');
+    								sendMailFinishModal.show();
+    								
+    								document.querySelector('#sendMailFinish button.btn-primary').addEventListener("click",function(){
+    									//sendMailFinishModal.hide();
+    									setTimeout(()=>location.href="https://localhost:8443/RestBookingProject/index.jsp",300);
+    								});
+    							}
+                    		});
+                }); 		
+        	}
+        }
     });
+    </script>
+    <script nonce="${nonce}">
+        document.addEventListener('DOMContentLoaded', function () {
+    		const userRadio = document.getElementById('userType1');
+    		const restRadio = document.getElementById('userType2');
+
+    		userRadio.addEventListener('click', function () {
+    			// 隱藏額外的表單元素
+    			$(".restData").css("display", "none");
+    		});
+    		restRadio.addEventListener('click', function () {
+    			// 顯示額外的表單元素
+    			$(".restData").css("display", "block");
+    		});
+     
+        	//不允許直接透過onclick呼叫函數，故改為以下寫法
+        	document.getElementById("submitLogin").addEventListener('click', function () {
+        		document.getElementById("login").submit();
+    		});
+        	document.getElementById("cancelSubmitLogin").addEventListener('click', function () {
+        		history.back();
+    		});
+        });
  </script>
  <style>
 	 .restData{
@@ -325,7 +361,7 @@
                 <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div class="container">
                         <div class="row">
-                            <form id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data">
+                            <form id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data" class="needs-validation">
                             	<!--20240629新增-->
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                 <div class="d-flex flex-row justify-content-evenly align-items-center">
@@ -346,44 +382,23 @@
                                 <div class="mb-3">
                                 <label for="account" class="form-label">請輸入帳號：</label>
                                 <input type="text" class="form-control" id="account" name="account"/>
-                                    <div class="valid-Account">
-                                        Looks good!
-                                    </div>
-                                    <div class="invalid-Account">
-                                        Please enter a account.
-                                    </div>
+                                    <div class="invalid-feedback">至少要 3 個字</div>
                                 </div>
                                 
-                                <div class="mb-3">
+                                <div class="mb-3 emailDiv">
                                 <label for="email" class="form-label">請輸入Email：</label>
-                                <input type="text" class="form-control" id="email" name="email" aria-describedby="emailHelp"/>
-                                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                                    <div class="valid-Email">
-                                        Looks good!
-                                    </div>
-                                    <div class="invalid-Email">
-                                        Please enter a email.
-                                    </div>
+                                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"/>
+                                    <div class="invalid-feedback">請輸入有效的 Email</div>
                                 </div>
                                 <div class="mb-3">
                                 <label for="password" class="form-label">請輸入密碼：</label>
                                 <input type="password" class="form-control" id="password" name="password"/>
-                                <div class="valid-Password">
-                                    Looks good!
+                                	<div class="invalid-feedback">至少要 3 個字</div>
                                 </div>
-                                <div class="invalid-Password">
-                                    Please enter a password.
-                                </div>
-                                </div>
-                                <div class="mb-5">
+                                <div class="mb-5 pwdDiv">
                                     <label for="checkedPassword" class="form-label">請再次輸入密碼：</label>
                                     <input type="password" class="form-control" id="checkedPassword" name="checkedPassword" />
-                                    <div class="valid-CheckedPassword">
-                                        Looks good!
-                                    </div>
-                                    <div class="invalid-CheckedPassword">
-                                        Please enter a password.
-                                    </div>
+                                    <div class="invalid-feedback">密碼不一致</div>
                                 </div>
                                 <div class="mb-3">
 								    <label for="formFile" class="form-label">個人/餐廳圖像：</label>
@@ -454,7 +469,7 @@
 								</div>
 
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-primary" onclick="regSubmit();">提交</button>
+                                    <button type="button" class="btn btn-primary" id="regSubmitButton">提交</button>
                                     <button type="button" class="btn btn-danger" onclick="javascript:history.back();">取消</button>
                                 </div>
                             </form>
@@ -503,7 +518,7 @@
                         <div class="row">
                             <form id="forgetPassword">
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                <div class="mb-5">
+                                <div class="mb-5 emailDiv">
 	                                <label for="inputEmail3" class="form-label">請輸入要傳送重設密碼信件的郵件位置：</label>
 	                                <input type="email" class="form-control" id="email" name="email">
 	                                <div class="invalid-feedback">郵件位置格式錯誤</div>
