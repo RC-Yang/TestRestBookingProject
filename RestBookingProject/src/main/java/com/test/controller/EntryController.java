@@ -7,6 +7,7 @@ import java.util.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.*;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,12 +26,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.test.bean.RegisterDTO;
 import com.test.bean.Restaurant;
 import com.test.bean.User;
 import com.test.dao.RestDao;
 import com.test.dao.UserDao;
-import com.test.util.EmailService;
+import com.test.service.EmailService;
+import com.test.service.UserService;
 
 @Controller
 @RequestMapping("/entry")
@@ -47,6 +51,8 @@ public class EntryController {
 	private  AuthenticationProvider authenticationProvider;
 	@Autowired
     private ServletContext servletContext;
+	@Autowired
+	UserService userService;
 
 	@RequestMapping("/login")
     public String loginForward(Authentication auth) {
@@ -93,68 +99,30 @@ public class EntryController {
 		return "reqAndLogin5";
 	}
 	
-	@PostMapping(value="/reg")
+	@PostMapping(value="/regForUser")
 	@ResponseBody//Spring MVC的表單雙向綁定，是將表單跟VO綁定；若前端表單值的型別，不能直接對應到VO的屬性型別的話，就不能直接雙向綁定
 	//例如img元素，對應的後端型別是MultipartFile，但VO通常會將相關屬性型別設為Byte array
-	@Transactional
-	public String registerToDB(@RequestParam(name="picture")MultipartFile picture, 
-			@RequestParam(name="account")String account,@RequestParam(name="email")String email,
-			@RequestParam(name="password")String password,
-			@RequestParam(name="userType")int userType,
-			@RequestParam(name="restName")String restName,
-			@RequestParam(name="restAddr")String restAddr,
-			@RequestParam(name="restTel")String restTel,
-			@RequestParam(name="restTelExt")String restTelExt,
-			@RequestParam(name="openingTime")String openingTime,
-			@RequestParam(name="closingTime")String closingTime,
-			HttpSession session,HttpServletRequest req) throws IOException {
+	public String registerToDB(@Valid RegisterDTO registerDTO){
 
-		User user = new User();
-		user.setAccount(account);
-		user.setEmail(email);
-		user.setPassword(password);
-		user.setPicture(picture);
-		user.setUserType(userType);
-		int result = 0;
+		String token = userService.register(registerDTO);
 		
-		if(userType==1) {
-			userDao.addUser(user);
-			result = userDao.addAUTHORITIES(user);
-		}
-		else if(userType==2) {
-			Restaurant rest = new Restaurant();
-			rest.setAddress(restAddr);
-			rest.setName(restName);
-			rest.setPhoneNum(restTel);
-			rest.setPhoneExt(restTelExt);
-			rest.setOpeningTime(openingTime);
-			rest.setClosingTime(closingTime);
-			
-			userDao.addUser(user);
-			userDao.addRestUser(user, rest);
-			result = userDao.addAUTHORITIES(user);
+		if(token!=null) {
+			emailService.sendVerificationMail(registerDTO.getEmail(), token);
 		}
 		
-		try {
-		    // 暂停一段时间
-		    Thread.sleep(1000); // 1秒钟的暂停
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
+		return "用戶驗證信已寄出";
+	}
+	
+	@GetMapping("/verify")
+	public String verify(@RequestParam String token,RedirectAttributes ra) {
+		
+		int result = userService.verify(token);
+		
+		if(result!=0) {
+			ra.addFlashAttribute("verificationPass", "用戶已通過驗證");
+			return "redirect:/entry/goToLogIn";
 		}
-		Optional<User> userOp = userDao.queryUserByAccount(account,userType,password);
-		if(userOp.isPresent()) {
-			Optional<byte[]> userImgOp = userDao.queryUserImage(account);
-			if(userImgOp.isPresent()) {
-				session.setAttribute("user", userOp.get());
-				session.setAttribute("account", user.getAccount());
-				session.setAttribute("password", user.getPassword());
-				session.setAttribute("userType", user.getUserType());
-				session.setAttribute("userImg", userImgOp.get());
-			}
-			
-			return "RegisterSuccess";
-		}
-		return "RegisterFail";
+		return null;
 	}
 
 	@RequestMapping("/sendUpdatePasswordMail")
@@ -162,7 +130,7 @@ public class EntryController {
 	public String sendUpdatePasswordMail(HttpServletRequest req) {
 		String email = req.getParameter("email");
 
-		emailService.sendMail(email);
+		emailService.sendUpdatePasswordMail(email);
 		return "密碼重設信傳送成功";
 	}
 	@RequestMapping("/goToResetPassword")

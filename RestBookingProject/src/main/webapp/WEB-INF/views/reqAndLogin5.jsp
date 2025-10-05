@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sp" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,18 +122,18 @@
        			var regFormData = new FormData(regForm);
        			
        			 $.ajax({
-       				 url: "${pageContext.request.contextPath}/entry/reg",
+       				 url: "${pageContext.request.contextPath}/entry/regForUser",
        	             type: "post",
        	             //data: $(this).serialize()
-                     //將表单中的input欄位name-value對，轉成字串；然後這個字串再被串在url後方，形成queryString
+                     //將表單中的input欄位name-value對，轉成字串；然後這個字串再被串在url後方，形成queryString
 
        	             data: regFormData,
        	             processData: false,
        	             contentType: false,
        	             success: function(response) {
-       	            	 $('#regSuccess.modal').addClass('fade');
-       	            	 $('#regSuccess.modal').modal('show');
-       	            	 
+						if(response=="用戶驗證信已寄出"){
+							$('#regSuccess.modal').modal('show');
+						} 
        	             },
        	             error: function(xhr, status, error) {
        	                 
@@ -191,16 +192,18 @@
     </script>
     <script nonce="${nonce}">
         document.addEventListener('DOMContentLoaded', function () {
-    		const userRadio = document.getElementById('userType1');
-    		const restRadio = document.getElementById('userType2');
+    		const userRadio = document.getElementById('userRole1');
+    		const restRadio = document.getElementById('userRole2');
 
     		userRadio.addEventListener('click', function () {
     			// 隱藏額外的表單元素
     			$(".restData").css("display", "none");
+    			$(".restData").prop("disabled", true);
     		});
     		restRadio.addEventListener('click', function () {
     			// 顯示額外的表單元素
     			$(".restData").css("display", "block");
+    			$(".restData").prop("disabled", false);
     		});
      
         	//不允許直接透過onclick呼叫函數，故改為以下寫法
@@ -277,6 +280,12 @@
     
 </style>
 <body>
+	<c:if test="${not empty verificationPass}">
+		<div class="alert alert-success position-relative">
+			${verificationPass}
+			<button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div> 
+	</c:if>
     <!-- 確認要寄出修改密碼信件的modal -->
 	<div id="sendMailConfirm" class="modal fade" tabindex="-1">
 		<div class="modal-dialog">
@@ -314,13 +323,13 @@
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title">註冊成功、即將登入</h5>
+	        <h5 class="modal-title">用戶驗證信已寄出</h5>
 	      </div>
 	      <div class="modal-body">
-	        <p>註冊成功、即將登入。</p>
+	        <p>用戶驗證信已寄出，請收信執行驗證。</p>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-primary" onclick="goToHomePage();">確認</button>
+	        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
 	      </div>
 	    </div>
 	  </div>
@@ -361,19 +370,19 @@
                 <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div class="container">
                         <div class="row">
-                            <form id="reg" method="post" action="${pageContext.request.contextPath}/entry/reg" enctype="multipart/form-data" class="needs-validation">
+                            <form id="reg" enctype="multipart/form-data" class="needs-validation">
                             	<!--20240629新增-->
                                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                 <div class="d-flex flex-row justify-content-evenly align-items-center">
                                     <div class="form-check">
-                                        <input type="radio" class="form-check-input" name="userType" id="userType1" value="1"/>
-                                        <label class="form-check-label userType" for="userType1">
+                                        <input type="radio" class="form-check-input" name="userRole" id="userRole1" value="ROLE_USER"/>
+                                        <label class="form-check-label userRole" for="userRole1">
                                           一般客戶端
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input type="radio" class="form-check-input" name="userType" id="userType2" value="2" checked="checked"/>
-                                        <label class="form-check-label userType" for="userType2">
+                                        <input type="radio" class="form-check-input" name="userRole" id="userRole2" value="ROLE_REST" checked="checked"/>
+                                        <label class="form-check-label userRole" for="userRole2">
                                           餐廳端
                                         </label>
                                     </div>

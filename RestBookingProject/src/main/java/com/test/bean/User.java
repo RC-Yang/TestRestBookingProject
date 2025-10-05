@@ -1,9 +1,12 @@
 package com.test.bean;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -25,13 +28,21 @@ public class User {
 	@NotEmpty(message="帳號不可為空白")
 	@Id
 	private String account;
-	private Integer userType;//顧客或餐廳使用者
+	
+	@Column(name="user_role")
+	private String userRole;//顧客或餐廳使用者
 	@Column(name="picture")
 	private byte[] pictureForJPA;//使用者頭貼
 	@Transient
 	private MultipartFile picture;//使用者頭貼
 	@Transient
 	private String image;//for呈顯於jsp header
+	
+	@Column
+	private boolean enabled;
+	
+	@OneToMany(mappedBy="user")
+	private List<VerificationToken> verificationToken;
 
 	//一使用者關聯到一餐廳
 	@OneToOne
@@ -42,27 +53,16 @@ public class User {
 	//在一對多關係中，需要用mappedBy參數來設定關聯
 	//在一對一關係中，JPA會直接將外鍵關聯到餐廳主鍵，故不用特別設定關聯的方式
 
-	public Integer getUserType() {
-		return userType;
-	}
-	public void setUserType(Integer userType) {
-		this.userType = userType;
-	}
-//	public Integer getId() {
-//		return id;
-//	}
-//	public void setId(Integer id) {
-//		this.id = id;
-//	}
-//	public String getName() {
-//		return name;
-//	}
-//	public void setName(String name) {
-//		this.name = name;
-//	}
 	public String getEmail() {
 		return email;
 	}
+	public String getUserRole() {
+		return userRole;
+	}
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -102,5 +102,17 @@ public class User {
 	}
 	public void setPictureForJPA(byte[] pictureForJPA) {
 		this.pictureForJPA = pictureForJPA;
+	}
+	public List<VerificationToken> getVerificationToken() {
+		return verificationToken;
+	}
+	public void setVerificationToken(List<VerificationToken> verificationToken) {
+		this.verificationToken = verificationToken;
+	}
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

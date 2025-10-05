@@ -11,13 +11,13 @@ public class TestUserDetails implements UserDetails {
 
 	private final String account;
 	private final String password;
-	private final Integer userType;
+	private final String userRole;
 
-	public TestUserDetails(String account, String password, Integer userType) {
+	public TestUserDetails(String account, String password, String userRole) {
 		super();
 		this.account = account;
 		this.password = password;
-		this.userType = userType;
+		this.userRole = userRole;
 	}
 
 	//用於Spring Security tag，principal取出account的值
@@ -33,15 +33,7 @@ public class TestUserDetails implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		String role = null;
 
-		if (userType == 1) {
-			role = "USER";
-		} else if (userType == 2) {
-			role = "REST";
-		} else if (userType == 3) {
-			role = "ADMIN";
-		}
-
-		role = "ROLE_" + role;
+		role = userRole;
 		return List.of(new SimpleGrantedAuthority(role));
 	}
 

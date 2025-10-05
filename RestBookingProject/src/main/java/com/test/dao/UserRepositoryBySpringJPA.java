@@ -10,7 +10,7 @@ import com.test.bean.User;
 
 public interface UserRepositoryBySpringJPA extends JpaRepository<User, String> {
 	
-	@Query("SELECT u FROM User u WHERE u.account = :account and u.userType=2")
+	@Query("SELECT u FROM User u WHERE u.account = :account and u.userRole='ROLE_REST'")
 	User queryRestUser(@Param("account")String account);
 	@Query("SELECT u FROM User u WHERE u.account = :account")
 	Optional<User> queryUserAccount(@Param("account")String account);

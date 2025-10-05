@@ -24,40 +24,7 @@
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
-	<!-- c3p0 pool -->
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<!-- basic -->
-		<property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/web?serverTimezone=Asia/Taipei&amp;characterEncoding=utf-8&amp;useUnicode=true" />
-		<property name="user" value="root" />
-		<property name="password" value="136524xd" />
-		<!-- options -->
-		<property name="minPoolSize" value="10" />
-		<property name="maxPoolSize" value="100" />
-		<property name="initialPoolSize" value="10" />
-		<property name="maxIdleTime" value="1800" />
-		<property name="maxStatements" value="100" /> <!-- 0 表示 no cahce any statement -->
-	</bean>
-	
-	<!-- jdbc template -->
-	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-	<!-- named parameter jdbc template -->
-	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-    	<constructor-arg ref="dataSource"/>
-	</bean>
-	
-	<!-- 配置事務管理器 -->
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" ></property>
-    </bean>
     
-    <!-- 開啟註解驅動，對事務相關的註解進行掃描與解析 -->
-    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
-
 	<!-- 錯誤訊息設定 properites -->
 
 	<bean id="messageSource"

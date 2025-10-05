@@ -21,24 +21,24 @@ public class TestUserDetailsService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-		String sql = "SELECT user_type, account, password FROM web.user WHERE account = ?";
+		String sql = "SELECT user_role, account, password FROM web.user WHERE account = ?";
 
 		User user = (User)jdbcTemplate.queryForObject(sql, (rs,i)->{
 			String account = rs.getString("account");
 			String password = rs.getString("password");
 			
-			Integer userType = rs.getInt("user_type");
+			String userRole = rs.getString("user_role");
 			
 			User tempUser = new User();//不可也命名為user，因為會跟外層的user，scope彼此互相衝突
 			tempUser.setAccount(account);
 			tempUser.setPassword(password);
-			tempUser.setUserType(userType);
+			tempUser.setUserRole(userRole);
 			
 			return tempUser;
 		},name);
 		
 		return new TestUserDetails(user.getAccount(),user.getPassword(),
-				user.getUserType());
+				user.getUserRole());
 	}
 
 }

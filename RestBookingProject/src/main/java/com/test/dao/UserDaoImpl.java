@@ -21,6 +21,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +33,17 @@ import com.test.util.DaoUtil;
 @Repository
 public class UserDaoImpl implements UserDao{
 	
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;	
+
+	public UserDaoImpl(JdbcTemplate jdbcTemplate) {
+		super();
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
 
 	public int addUser(User user) {
-		String sql1 = "insert into user(email,password,account,user_type,picture)"
-				+ "values(?,?,?,?,?)";
+		String sql1 = "insert into user(email,password,account,user_role,picture,enabled)"
+				+ "values(?,?,?,?,?,?)";
 		
 		int result = 0;
 		result = jdbcTemplate.update(conn->{
@@ -46,35 +52,29 @@ public class UserDaoImpl implements UserDao{
 			pstmt.setString(1,user.getEmail());
 			pstmt.setString(2,user.getPassword());
 			pstmt.setString(3,user.getAccount());
-			pstmt.setInt(4,user.getUserType());	
-			pstmt.setBlob(5, DaoUtil.multipartFileToBlob(user.getPicture()));
+			pstmt.setString(4,user.getUserRole());
+			
+			if(user.getPicture()==null) {
+				pstmt.setNull(5, java.sql.Types.BLOB);
+			}else {
+				pstmt.setBlob(5, DaoUtil.multipartFileToBlob(user.getPicture()));
+			}	
+			
+			pstmt.setBoolean(6,user.isEnabled());
+			
 			return pstmt;
-			});
+		});
 	 
 		return result;		
 	}
-
-	public int addAUTHORITIES(User user) {
+	
+	public int updateUser(User user) {
+		String sql = "update user set enabled=? where account=?";
 		
-		int result = 0;
-
-		if(user.getUserType()==1) {
-			String sql1 ="INSERT INTO AUTHORITIES(account,authority) values(?,'ROLE_USER')";
-			result = jdbcTemplate.update(conn->{
-				PreparedStatement pstmt = conn.prepareStatement(sql1);
-				pstmt.setString(1,user.getAccount());
-				return pstmt;
-			});
-		}else if(user.getUserType()==2) {
-			String sql2 ="INSERT INTO AUTHORITIES(account,authority) values(?,'ROLE_REST')";
-			result = jdbcTemplate.update(conn->{
-				PreparedStatement pstmt = conn.prepareStatement(sql2);
-				pstmt.setString(1,user.getAccount());
-				return pstmt;
-			});
-		}
-		return result;		
+		return jdbcTemplate.update(sql,true,user.getAccount());
 	}
+
+
 	@Override
 	public int addRestUser(User user,Restaurant rest) {
 		int result = 0;
@@ -108,7 +108,7 @@ public class UserDaoImpl implements UserDao{
 				//取出user資料
 				Blob blob = rs.getBlob("picture");
 				String account = rs.getString("account");
-				int user_type = rs.getInt("user_type");
+				String userRole = rs.getString("user_role");
 
 				byte[] byteArray = null;				
 				byteArray = DaoUtil.blobToByteArr(blob);
@@ -116,7 +116,7 @@ public class UserDaoImpl implements UserDao{
 				//取出該筆餐廳資料後，將資料加入VO
 				User user = new User();
 				user.setAccount(account);
-				user.setUserType(user_type);
+				user.setUserRole(userRole);
 				
 				user.setImage(DaoUtil.getImageAsBase64(byteArray));
 				return user;

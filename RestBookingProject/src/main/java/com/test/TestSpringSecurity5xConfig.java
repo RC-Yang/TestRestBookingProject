@@ -2,7 +2,8 @@ package com.test;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.apache.catalina.connector.Connector;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -66,9 +67,10 @@ public class TestSpringSecurity5xConfig {
 				.authorizeRequests(
 						authorizeRequests -> authorizeRequests
 								.antMatchers("/image/**", "/js/**", "/entry/goToLogIn", "/entry/goToReg",
-										"/entry/checkLogin", "/form/queryDistrictForRest","/index.jsp","/entry/reg"
+										"/entry/checkLogin", "/form/queryDistrictForRest","/index.jsp","/entry/regForUser"
 										,"/indexForAdmin.jsp","/entry/checkloginForAdmin","/entry/goToResetPassword"
-										,"/entry/sendUpdatePasswordMail","/entry/updatePassword")
+										,"/entry/sendUpdatePasswordMail","/entry/updatePassword"
+										,"/entry/verify")
 								.permitAll().anyRequest().authenticated())
 				//用表單驗證(若只有這個，就只能用表單驗證)
 				.formLogin(form -> form
@@ -99,12 +101,13 @@ public class TestSpringSecurity5xConfig {
 	@Bean//這個bean讓Spring Security能根據用戶清單，檢查嘗試登入者是否為用戶
 	//有了該bean，外加透過Spring Security驗證用戶登入成功，就可以在Spring Security tag使用principal
 	//用方法參數注入法，來注入UserDetailsService
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService
+    		, PasswordEncoder encoder) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         //authProvider.setUserDetailsService(new TestUserDetailsService());
         //authProvider.setUserDetailsService(userDetailsService());
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(new PlainTextPasswordEncoder());
+        authProvider.setPasswordEncoder(encoder);//註冊encoder後即可用方法參數注入
         return authProvider;
     }
 	

@@ -1,39 +1,26 @@
 package com.test.bean;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.validation.constraints.*;
 
-public class RegisterDTO {
+import org.springframework.web.multipart.MultipartFile;
 
-	@Id
-	private Integer id;
+public class RegisterDTO {
 	
-	@Column
 	private String account;
-	
-	@Column
+
 	@NotBlank(message = "Email 不可為空")
     @Email(message = "Email 格式錯誤")
     private String email;
 
-	@Column
     @NotBlank(message = "密碼不可為空")
-    @Size(min = 6, message = "密碼長度至少 6 碼")
-    @Pattern(regexp="^(?=.*[A-Z]+)(?=.*[0-9]+).*$",
-    message="密碼必須包含至少一個大寫字母與數字")
+    @Size(min = 3, message = "密碼長度至少 3 碼")
+    //@Pattern(regexp="^(?=.*[A-Z]+)(?=.*[0-9]+).*$",
+    //message="密碼必須包含至少一個大寫字母與數字")
     private String password;
 	
-	@Column(name="user_Type")
-	private Integer userType;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	private String userRole;
+	
+	private MultipartFile picture;
 
 	public String getAccount() {
 		return account;
@@ -59,11 +46,19 @@ public class RegisterDTO {
 		this.password = password;
 	}
 
-	public Integer getUserType() {
-		return userType;
+	public String getUserRole() {
+		return userRole;
 	}
 
-	public void setUserType(Integer userType) {
-		this.userType = userType;
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
+	public MultipartFile getPicture() {
+		return picture;
+	}
+
+	public void setPicture(MultipartFile picture) {
+		this.picture = picture;
 	}
 }
