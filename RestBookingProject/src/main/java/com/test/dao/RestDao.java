@@ -11,6 +11,7 @@ import com.test.bean.User;
 public interface RestDao {
 	public List<Image> getAllRestImage();
 	public List<Restaurant> getRestsByDistrictJoinImage(String country,String district);
+	public List<Restaurant> getRestsByDistrictJoinImage(String district);
 	public List<Image> getRestImage(Integer restName,Integer restImageName);
-
+	public String getDistrictNameById(String districtId);
 }

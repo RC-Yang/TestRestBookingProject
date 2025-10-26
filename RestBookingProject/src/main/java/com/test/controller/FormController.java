@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
+import com.test.bean.Country;
 import com.test.bean.District;
 import com.test.bean.RestStyle;
 import com.test.bean.User;
@@ -48,40 +49,62 @@ public class FormController {
 	@Autowired
 	private BookingRepository bookingRepository;
 	
+//	@RequestMapping("/queryAllCity")
+//	@ResponseBody
+//	public Map<String,String> queryAllCity() {
+//		List<District> cityList = formService.findAllCity();
+//
+//		Map<String,String> cityMap = new HashMap<>();
+//		for(District district:cityList) {
+//			cityMap.put(district.getCountryName(),district.getCountryName());//重複的縣市名稱，就單純put不進去而已，不會跳錯
+//		}
+//		return cityMap;
+//	}
+	
 	@RequestMapping("/queryAllCity")
 	@ResponseBody
-	public Map<String,String> queryAllCity() {
-		List<District> cityList = formService.findAllCity();
+	public List<Country> queryAllCity() {
+		List<Country> cityList = formService.findAllCity();
 
-		Map<String,String> cityMap = new HashMap<>();
-		for(District district:cityList) {
-			cityMap.put(district.getCountryName(),district.getCountryName());//重複的縣市名稱，就單純put不進去而已，不會跳錯
-		}
-		return cityMap;
+		return cityList;
 	}
 
-	@RequestMapping("/queryDistrict")
+//	@RequestMapping("/queryDistrict")
+//	@ResponseBody
+//	public Map<String,String> queryDistrict(@RequestParam(name="country") String country) {
+//		List<District> districtList = formService.findDistrictsByCountry(country);
+//
+//		Map<String,String> districtMap = new HashMap<>();
+//		for(District district:districtList) {
+//			districtMap.put(district.getDistrictId().toString(),district.getDistrictName());
+//		}
+//		return districtMap;
+//	}
+	
+	@GetMapping("/queryDistrict")
 	@ResponseBody
-	public Map<String,String> queryDistrict(@RequestParam(name="country") String country) {
-		List<District> districtList = formService.findDistrictsByCountry(country);
-
-		Map<String,String> districtMap = new HashMap<>();
-		for(District district:districtList) {
-			districtMap.put(district.getDistrictId().toString(),district.getDistrictName());
-		}
-		return districtMap;
+	public List<District> queryDistrict(@RequestParam(name="cityId") Integer cityId){
+		return formService.findDistrictsByCity(cityId);
 	}
+	
+//	@RequestMapping("/queryAllDistricts")
+//	@ResponseBody
+//	public Map<String,String> findAllDistricts() {
+//		List<District> districtList = formService.findAllDistricts();
+//
+//		Map<String,String> districtMap = new HashMap<>();
+//		for(District district:districtList) {
+//			districtMap.put(district.getDistrictId().toString(),district.getCountryName()+district.getDistrictName());
+//		}
+//		return districtMap;
+//	}
 	
 	@RequestMapping("/queryAllDistricts")
 	@ResponseBody
-	public Map<String,String> findAllDistricts() {
+	public List<District> findAllDistricts() {
 		List<District> districtList = formService.findAllDistricts();
 
-		Map<String,String> districtMap = new HashMap<>();
-		for(District district:districtList) {
-			districtMap.put(district.getDistrictId().toString(),district.getCountryName()+district.getDistrictName());
-		}
-		return districtMap;
+		return districtList;
 	}
 	
 	@GetMapping("/queryDistrictForRest")
@@ -97,7 +120,7 @@ public class FormController {
 		List<RestStyle> restStyleList = restStyleRepository.findAllRestStyle();
 		model.addAttribute("restStyleList", restStyleList);
 		
-		return "queryRest3";
+		return "queryRest4";
 	}
 	
 	@RequestMapping("/goToUpdateUserInfo")

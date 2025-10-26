@@ -15,7 +15,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-@EnableAspectJAutoProxy
+//@EnableAspectJAutoProxy
+//上面那段不用加，因為Spring Boot會自動加
 public class TestConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {

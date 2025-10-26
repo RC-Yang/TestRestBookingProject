@@ -39,26 +39,24 @@ public class RestController {
 	}
 
 	@RequestMapping(value="/queryRests")
-	public String queryRests(Model model,@RequestParam String country
-			,@RequestParam String[] checkedDistrict) {
-		//20241215修正被選中的的城市與行政區，呈顯的方式
-		model.addAttribute("checkedDistrictList", Arrays.asList(checkedDistrict));
-	
-		List<Restaurant> allQueryRest = new ArrayList<>();
+	public String queryRests(Model model,@RequestParam String[] districtId) {
 		
-		for(String district:checkedDistrict) {
-			
-			//使用JPA
-			//List<Restaurant> rests = restRepository.findRestsByDistrictJoinImage(dis);
-			//使用Spring JDBC
-			List<Restaurant> rests = restDao.getRestsByDistrictJoinImage(district.substring(0, 3), district.substring(3));
+		List<Restaurant> allQueryRest = new ArrayList<>();
+
+		List<String> districtNames=new ArrayList<>();
+		for(String id:districtId) {
+			String districtName = restDao.getDistrictNameById(id);
+			districtNames.add(districtName);
+
+			List<Restaurant> rests = restDao.getRestsByDistrictJoinImage(districtName);
 			for(Restaurant rest:rests) {
 				allQueryRest.add(rest);
 			}
 		}
-	
+		
+		model.addAttribute("checkedDistrictList", districtNames);
 		model.addAttribute("rests", allQueryRest);
-		//20240819修改
+
 		return "queryRestResult2";
 	}
 }
